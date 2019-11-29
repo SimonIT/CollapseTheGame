@@ -25,7 +25,7 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 
 	private int borderBoard = 10;
 	private int borderFields = 2;
-	private int pieceSpace = 2;
+	private int pieceSpace = 3;
 
 	private Texture board, field;
 
@@ -77,27 +77,27 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		float width;
-		float height;
+		float widthBoard;
+		float heightBoard;
 
 		float fieldSize;
 		if (getWidth() < getHeight()) {
-			width = getWidth();
-			fieldSize = (width - (2 * this.borderBoard) - ((this.x - 1f) * this.borderFields)) / this.x;
-			height = 2 * this.borderBoard + this.y * fieldSize;
+			widthBoard = getWidth();
+			fieldSize = (widthBoard - (2f * this.borderBoard) - ((this.x + 1f) * this.borderFields)) / this.x;
+			heightBoard = 2 * this.borderBoard + this.y * (this.borderFields + fieldSize);
 		} else {
-			height = getHeight();
-			fieldSize = (height - (2 * this.borderBoard) - ((this.y - 1f) * this.borderFields)) / this.y;
-			width = 2 * this.borderBoard + this.x * fieldSize;
+			heightBoard = getHeight();
+			fieldSize = (heightBoard - (2f * this.borderBoard) - ((this.y - 1f) * this.borderFields)) / this.y;
+			widthBoard = 2 * this.borderBoard + this.x * (this.borderFields + fieldSize);
 		}
 		float pieceSize = fieldSize - (2 * this.pieceSpace);
 
-		batch.draw(this.board, getX(), getY(), width, height);
+		batch.draw(this.board, getX(), getY(), widthBoard, heightBoard);
 
 		for (int i = 0; i < this.pieces.length; i++) {
 			for (int j = 0; j < this.pieces[i].length; j++) {
-				float fieldX = getX() + this.borderBoard + (j * fieldSize);
-				float fieldY = getY() + this.borderBoard + (i * fieldSize);
+				float fieldX = getX() + this.borderBoard + (j * (this.borderFields + fieldSize));
+				float fieldY = getY() + this.borderBoard + (i * (this.borderFields + fieldSize));
 				batch.draw(this.field, fieldX, fieldY, fieldSize, fieldSize);
 				if (this.pieces[i][j] != null) {
 					batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);

@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class CollapseTheGame extends ApplicationAdapter {
 
 	Stage stage;
-	Skin skin = new Skin();
 	Board board;
 	private Assets assets = new Assets();
 
@@ -24,8 +23,14 @@ public class CollapseTheGame extends ApplicationAdapter {
 	public void create() {
 		this.stage = new Stage(new ScreenViewport());
 		board = new Board(assets, 8, 10);
-		board.addPiece(2,2, new Piece(Color.BLUE, 50));
-		board.addPiece(0,0, new Piece(Color.BLUE, 3));
+		Piece.diameter = Gdx.graphics.getWidth(); // TODO better
+		board.addPiece(2, 2, new Piece(Color.BLUE));
+		Piece p = new Piece(Color.BLUE);
+		p.setDotAmount(2);
+		board.addPiece(2, 3, p);
+		Piece p2 = new Piece(Color.BLUE);
+		p2.setDotAmount(3);
+		board.addPiece(2, 4, p2);
 		Table table = new Table();
 		table.add(board);
 		table.setFillParent(true);

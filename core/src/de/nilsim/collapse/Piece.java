@@ -5,31 +5,24 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 public class Piece extends ch.asynk.gdx.boardgame.Piece {
+	public static int diameter;
 	private int dotAmount = 1;
 	private Color color;
-	private int diameter;
 	private Pixmap pieceDrawer;
 
-	public Piece(Color color, int diameter) {
+	public Piece(Color color) {
 		super(new Texture(new Pixmap(0, 0, Pixmap.Format.RGBA8888)));
 		this.pieceDrawer = new Pixmap(diameter, diameter, Pixmap.Format.RGBA8888);
 		this.color = color;
-		this.diameter = diameter;
 		updateTexture();
 	}
 
-	public Piece(Color color, int diameter, int dotAmount) {
+	public Piece(Color color, int dotAmount) {
 		super(new Texture(new Pixmap(0, 0, Pixmap.Format.RGBA8888)));
 		this.pieceDrawer = new Pixmap(diameter, diameter, Pixmap.Format.RGBA8888);
 		this.color = color;
-		this.diameter = diameter;
 		this.dotAmount = dotAmount;
 		updateTexture();
-	}
-
-	@Override
-	public void setSize(float width, float height) {
-		super.setSize(width, height);
 	}
 
 	void updateTexture() {
@@ -41,13 +34,18 @@ public class Piece extends ch.asynk.gdx.boardgame.Piece {
 				this.pieceDrawer.fillCircle(diameter / 2, diameter / 2, diameter / 8);
 				break;
 			case 2:
-				this.pieceDrawer.fillCircle(diameter / 4, diameter / 2 - diameter / 8, diameter / 8);
-				this.pieceDrawer.fillCircle(3 * diameter / 4, diameter / 2 - diameter / 8, diameter / 8);
+				this.pieceDrawer.fillCircle(diameter / 3, diameter / 2, diameter / 8);
+				this.pieceDrawer.fillCircle(2 * diameter / 3, diameter / 2, diameter / 8);
 				break;
 			case 3:
-				// Todo
+				this.pieceDrawer.fillCircle(diameter / 3, 2 * diameter / 3, diameter / 8);
+				this.pieceDrawer.fillCircle(2 * diameter / 3, 2 * diameter / 3, diameter / 8);
+				this.pieceDrawer.fillCircle(diameter / 2, diameter / 3, diameter / 8);
 		}
-		setTexture(new Texture(this.pieceDrawer));
+
+		Texture t = new Texture(this.pieceDrawer);
+		setTexture(t);
+		setRegion(0, 0, t.getWidth(), t.getHeight());
 	}
 
 	public int getDotAmount() {
