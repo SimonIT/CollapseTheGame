@@ -1,0 +1,37 @@
+language: android
+android:
+  components:
+    - build-tools-29.0.2
+    - android-29
+jdk: openjdk11
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
+before_deploy:
+  - ./gradlew desktop:dist
+  - mv desktop/build/libs/desktop-*.jar desktop/build/libs/{PROJECT_NAME}-$TRAVIS_TAG.jar
+  - ./gradlew android:assembleRelease
+  - mv android/build/outputs/apk/android-release-unsigned.apk android/build/outputs/apk/{PROJECT_NAME}-$TRAVIS_TAG-unaligned.apk
+  - ./gradlew html:dist
+  - zip -r {PROJECT_NAME}-$TRAVIS_TAG.zip ./html/build/dist/
+deploy:
+  provider: releases
+  pre-release: true
+  skip_cleanup: true
+  api_key: ${GH_TOKEN}
+  file_glob: true
+  file:
+    - desktop/build/libs/{PROJECT_NAME}-$TRAVIS_TAG.jar
+    - android/build/outputs/apk/{PROJECT_NAME}-$TRAVIS_TAG-unaligned.apk
+    - {PROJECT_NAME}-$TRAVIS_TAG.zip
+  on:
+    tags: true
+    repo: SimonIT/CollapseTheGame
+    all_branches: true
