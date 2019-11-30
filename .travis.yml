@@ -15,6 +15,13 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 
+before_script:
+  - "keytool -genkey -v -keystore $HOME/.android/debug.keystore -storepass android -alias androiddebugkey -keypass
+android -keyalg RSA -keysize 2048 -validity 10000 -noprompt -dname \"CN=Gdx, OU=libGDX, O=libGDX, L=Unknown, ST=Unknown, C=US\""
+
+script:
+  - ./gradlew build
+
 before_deploy:
   - ./gradlew desktop:dist
   - mv desktop/build/libs/desktop-*.jar desktop/build/libs/{PROJECT_NAME}-$TRAVIS_TAG.jar
