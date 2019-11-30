@@ -9,7 +9,16 @@ public class Player {
 	private Array<Piece> pieces;
 	private long points;
 
+	public Player(Color color, String name) {
+		this.color = color;
+		this.name = name;
+	}
+
 	public boolean ownsPiece(Piece piece) {
 		return this.pieces.contains(piece, true);
+	}
+
+	public Color getColor() {
+		return color;
 	}
 }

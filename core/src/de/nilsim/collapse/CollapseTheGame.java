@@ -22,6 +22,7 @@ public class CollapseTheGame extends ApplicationAdapter {
 	@Override
 	public void create() {
 		this.stage = new Stage(new ScreenViewport());
+		Gdx.input.setInputProcessor(stage);
 		board = new Board(assets, 8, 10);
 		Piece.diameter = Gdx.graphics.getWidth(); // TODO better
 		board.addPiece(2, 2, new Piece(Color.BLUE));
@@ -32,8 +33,8 @@ public class CollapseTheGame extends ApplicationAdapter {
 		p2.setDotAmount(3);
 		board.addPiece(2, 4, p2);
 		Table table = new Table();
-		table.add(board);
 		table.setFillParent(true);
+		table.add(board);
 		this.stage.addActor(table);
 	}
 
@@ -48,7 +49,6 @@ public class CollapseTheGame extends ApplicationAdapter {
 	@Override
 	public void resize(int width, int height) {
 		this.stage.getViewport().update(width, height, true);
-		board.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override

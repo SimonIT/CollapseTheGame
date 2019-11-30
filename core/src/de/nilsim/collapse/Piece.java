@@ -25,6 +25,13 @@ public class Piece extends ch.asynk.gdx.boardgame.Piece {
 		updateTexture();
 	}
 
+	public void setColor(Color color) {
+		if (!this.color.equals(color)) {
+			this.color = color;
+			updateTexture();
+		}
+	}
+
 	void updateTexture() {
 		this.pieceDrawer.setColor(color);
 		this.pieceDrawer.fillCircle(diameter / 2, diameter / 2, diameter / 2);
