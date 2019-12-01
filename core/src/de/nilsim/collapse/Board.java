@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.utils.Array;
 
 public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board {
 
@@ -30,9 +31,11 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 	private int pieceSpace = 3;
 	private float fieldSize, pieceSize;
 	private Texture board, field;
-	private Player currentPlayer = new Player(Color.BLUE, "Simon"); // TODO dynamic
+	private Array<Player> player = new Array<>();
+	private int currentPlayerIndex = 0;
 
 	public Board(Assets assets, int x, int y) {
+		this.player.add(new Player(Color.valueOf("eb3935"), "Simon"), new Player(Color.valueOf("679ed7"), "Nils")); // TODO dynamic
 		this.assets = assets;
 		this.pieces = new Piece[y][x];
 		this.x = x;
@@ -57,7 +60,13 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 			public void tap(InputEvent event, float x, float y, int count, int button) {
 				int yPiece = MathUtils.floorPositive((y - borderBoard) / (fieldSize + borderFields));
 				int xPiece = MathUtils.floorPositive((x - borderBoard) / (fieldSize + borderFields));
-				increaseDotAmount(xPiece, yPiece, true);
+				if (increaseDotAmount(xPiece, yPiece, true)) {
+					if (currentPlayerIndex < player.size - 1) {
+						currentPlayerIndex++;
+					} else {
+						currentPlayerIndex = 0;
+					}
+				}
 			}
 
 			@Override
@@ -67,28 +76,55 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 		});
 	}
 
-	private void increaseDotAmount(int x, int y) {
-		increaseDotAmount(x, y, false);
+	private boolean increaseDotAmount(int x, int y) {
+		return increaseDotAmount(x, y, false);
 	}
 
-	private void increaseDotAmount(int x, int y, boolean touch) {
+	private boolean increaseDotAmount(int x, int y, boolean touch) {
 		if (x < this.x && x > -1 && y < this.y && y > -1) {
 			Piece piece = pieces[y][x];
+			Player currentPlayer = player.get(currentPlayerIndex);
 			if (piece != null) {
-				if (!piece.hasMaximumDots()) {
-					piece.setColor(currentPlayer.getColor());
-					piece.increaseDotAmount();
-				} else {
-					pieces[y][x] = null;
-					increaseDotAmount(x + 1, y);
-					increaseDotAmount(x, y + 1);
-					increaseDotAmount(x - 1, y);
-					increaseDotAmount(x, y - 1);
+				if (!touch || currentPlayer.ownsPiece(piece)) {
+					removePieceFromPlayers(piece);
+					if (!piece.hasMaximumDots()) {
+						piece.setColor(currentPlayer.getColor());
+						piece.increaseDotAmount();
+						currentPlayer.addPiece(piece);
+					} else {
+						pieces[y][x] = null;
+						increaseDotAmount(x + 1, y);
+						increaseDotAmount(x, y + 1);
+						increaseDotAmount(x - 1, y);
+						increaseDotAmount(x, y - 1);
+					}
+					return true;
 				}
-			} else if (!touch) {
-				pieces[y][x] = new Piece(currentPlayer.getColor());
+			} else if (!touch || hasNoPiece(currentPlayer)) {
+				Piece newp = new Piece(currentPlayer.getColor());
+				pieces[y][x] = newp;
+				currentPlayer.addPiece(newp);
+				return true;
 			}
 		}
+		return false;
+	}
+
+	void removePieceFromPlayers(Piece piece) {
+		for (Player player : this.player) {
+			player.removePiece(piece);
+		}
+	}
+
+	boolean hasNoPiece(Player player) {
+		for (Piece[] row : this.pieces) {
+			for (Piece piece : row) {
+				if (piece != null && player.ownsPiece(piece)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@Override

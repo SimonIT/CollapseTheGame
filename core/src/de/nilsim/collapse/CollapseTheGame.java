@@ -25,13 +25,6 @@ public class CollapseTheGame extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(stage);
 		board = new Board(assets, 8, 10);
 		Piece.diameter = Gdx.graphics.getWidth(); // TODO better
-		board.addPiece(2, 2, new Piece(Color.BLUE));
-		Piece p = new Piece(Color.BLUE);
-		p.setDotAmount(2);
-		board.addPiece(2, 3, p);
-		Piece p2 = new Piece(Color.BLUE);
-		p2.setDotAmount(3);
-		board.addPiece(2, 4, p2);
 		Table table = new Table();
 		table.setFillParent(true);
 		table.add(board);
