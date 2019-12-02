@@ -31,11 +31,11 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 	private int pieceSpace = 3;
 	private float fieldSize, pieceSize;
 	private Texture board, field;
-	private Array<Player> player = new Array<>();
+	private Array<Player> players = new Array<>();
 	private int currentPlayerIndex = 0;
 
 	public Board(Assets assets, int x, int y) {
-		this.player.add(new Player(Color.valueOf("eb3935"), "Simon"), new Player(Color.valueOf("679ed7"), "Nils")); // TODO dynamic
+		this.players.add(new Player(Color.valueOf("eb3935"), "Simon"), new Player(Color.valueOf("679ed7"), "Nils")); // TODO dynamic
 		this.assets = assets;
 		this.pieces = new Piece[y][x];
 		this.x = x;
@@ -61,7 +61,9 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 				int yPiece = MathUtils.floorPositive((y - borderBoard) / (fieldSize + borderFields));
 				int xPiece = MathUtils.floorPositive((x - borderBoard) / (fieldSize + borderFields));
 				if (increaseDotAmount(xPiece, yPiece, true)) {
-					if (currentPlayerIndex < player.size - 1) {
+					Player player = players.get(currentPlayerIndex);
+					System.out.println(player.getName() + " " + player.getPoints());
+					if (currentPlayerIndex < players.size - 1) {
 						currentPlayerIndex++;
 					} else {
 						currentPlayerIndex = 0;
@@ -83,9 +85,13 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 	private boolean increaseDotAmount(int x, int y, boolean touch) {
 		if (x < this.x && x > -1 && y < this.y && y > -1) {
 			Piece piece = pieces[y][x];
-			Player currentPlayer = player.get(currentPlayerIndex);
+			Player currentPlayer = players.get(currentPlayerIndex);
 			if (piece != null) {
-				if (!touch || currentPlayer.ownsPiece(piece)) {
+				boolean ownPiece = currentPlayer.ownsPiece(piece);
+				if (!touch || ownPiece) {
+					if (!ownPiece) {
+						currentPlayer.addPoints(piece.getDotAmount());
+					}
 					removePieceFromPlayers(piece);
 					if (!piece.hasMaximumDots()) {
 						piece.setColor(currentPlayer.getColor());
@@ -111,7 +117,7 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 	}
 
 	void removePieceFromPlayers(Piece piece) {
-		for (Player player : this.player) {
+		for (Player player : this.players) {
 			player.removePiece(piece);
 		}
 	}
