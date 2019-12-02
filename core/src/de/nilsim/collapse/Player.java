@@ -35,4 +35,12 @@ public class Player {
 	public Color getColor() {
 		return color;
 	}
+
+	public void addPoints(long points) {
+		this.points += points;
+	}
+
+	public long getPoints() {
+		return this.points;
+	}
 }
