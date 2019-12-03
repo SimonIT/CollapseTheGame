@@ -56,11 +56,7 @@ public class BoardActor extends Actor implements Board {
 				if (increaseDotAmount(xPiece, yPiece, true)) {
 					Player player = players.get(currentPlayerIndex);
 					System.out.println(player.getName() + " " + player.getPoints());
-					if (currentPlayerIndex < players.size - 1) {
-						currentPlayerIndex++;
-					} else {
-						currentPlayerIndex = 0;
-					}
+					currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
 				}
 			}
 
