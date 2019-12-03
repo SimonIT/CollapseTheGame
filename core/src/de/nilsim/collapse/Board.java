@@ -164,6 +164,11 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 
 	}
 
+	@Override
+	public float distance(int x0, int y0, int x1, int y1, Geometry geometry) {
+		return 0;
+	}
+
 	void addPiece(int x, int y, Piece piece) {
 		this.pieces[y][x] = piece;
 	}
