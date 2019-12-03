@@ -26,6 +26,7 @@ public class BoardActor extends Actor implements Board {
 	private Texture board, field;
 	private Array<Player> players = new Array<>();
 	private int currentPlayerIndex = 0;
+	private boolean wrapWorld = true;
 
 	public BoardActor(Assets assets, int width, int height) {
 		this.players.add(new Player(Color.valueOf("eb3935"), "Simon"), new Player(Color.valueOf("679ed7"), "Nils")); // TODO dynamic
@@ -72,7 +73,11 @@ public class BoardActor extends Actor implements Board {
 	}
 
 	private boolean increaseDotAmount(int x, int y, boolean touch) {
-		if (x < 0 || x >= this.width || y < 0 || y >= this.height) return false;
+		if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+			if (!wrapWorld) return false;
+			x = (x + this.width) % this.width;
+			y = (y + this.height) % this.height;
+		}
 
 		Piece piece = pieces[y][x];
 		Player currentPlayer = players.get(this.currentPlayerIndex);
@@ -96,13 +101,13 @@ public class BoardActor extends Actor implements Board {
 				}
 				return true;
 			}
-			return false;
 		} else if (!touch || hasNoPiece(currentPlayer)) {
-			Piece newp = new Piece(currentPlayer.getColor());
-			pieces[y][x] = newp;
-			currentPlayer.addPiece(newp);
+			Piece newPiece = new Piece(currentPlayer.getColor());
+			pieces[y][x] = newPiece;
+			currentPlayer.addPiece(newPiece);
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	void removePieceFromPlayers(Piece piece) {
