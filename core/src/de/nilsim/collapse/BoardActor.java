@@ -54,12 +54,12 @@ public class BoardActor extends Actor implements Board {
 				int yPiece = MathUtils.floorPositive((y - borderBoard) / (fieldSize + borderFields));
 				int xPiece = MathUtils.floorPositive((x - borderBoard) / (fieldSize + borderFields));
 				if (increaseDotAmount(xPiece, yPiece, true)) {
-					Player player = players.get(currentPlayerIndex);
+					Player player = players.get(this.currentPlayerIndex);
 					System.out.println(player.getName() + " " + player.getPoints());
-					if (currentPlayerIndex < players.size - 1) {
-						currentPlayerIndex++;
+					if (this.currentPlayerIndex < players.size - 1) {
+						this.currentPlayerIndex++;
 					} else {
-						currentPlayerIndex = 0;
+						this.currentPlayerIndex = 0;
 					}
 				}
 			}
@@ -79,7 +79,7 @@ public class BoardActor extends Actor implements Board {
 		if (x < 0 || x >= this.width || y < 0 || y >= this.height) return false;
 
 		Piece piece = pieces[y][x];
-		Player currentPlayer = players.get(currentPlayerIndex);
+		Player currentPlayer = players.get(this.currentPlayerIndex);
 		if (piece != null) {
 			boolean ownPiece = currentPlayer.ownsPiece(piece);
 			if (!touch || ownPiece) {
