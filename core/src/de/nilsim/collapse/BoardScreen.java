@@ -13,7 +13,6 @@ public class BoardScreen extends ScreenAdapter {
 	private BoardActor board;
 
 	BoardScreen(Assets assets) {
-		System.out.println("cons");
 		this.stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 		this.board = new BoardActor(assets, 5, 7);
@@ -25,13 +24,11 @@ public class BoardScreen extends ScreenAdapter {
 
 	@Override
 	public void show() {
-		System.out.println("Show");
 		Piece.diameter = Gdx.graphics.getWidth(); // TODO better
 	}
 
 	@Override
 	public void render(float delta) {
-		System.out.println("render");
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		this.stage.act(Gdx.graphics.getDeltaTime());
