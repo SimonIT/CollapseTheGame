@@ -16,17 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Array;
 
 public class BoardActor extends Actor implements Board {
-
 	private Assets assets;
 	private Piece[][] pieces;
-	/**
-	 * amount of pieces x
-	 */
-	private int x;
-	/**
-	 * amount of pieces y
-	 */
-	private int y;
+	private int width, height;
 	private int borderBoard = 10;
 	private int borderFields = 2;
 	private int pieceSpace = 3;
@@ -35,12 +27,12 @@ public class BoardActor extends Actor implements Board {
 	private Array<Player> players = new Array<>();
 	private int currentPlayerIndex = 0;
 
-	public BoardActor(Assets assets, int x, int y) {
+	public BoardActor(Assets assets, int width, int height) {
 		this.players.add(new Player(Color.valueOf("eb3935"), "Simon"), new Player(Color.valueOf("679ed7"), "Nils")); // TODO dynamic
 		this.assets = assets;
-		this.pieces = new Piece[y][x];
-		this.x = x;
-		this.y = y;
+		this.pieces = new Piece[height][width];
+		this.width = width;
+		this.height = height;
 
 		Pixmap bp = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		bp.setColor(Color.valueOf("c85e2c"));
@@ -84,37 +76,37 @@ public class BoardActor extends Actor implements Board {
 	}
 
 	private boolean increaseDotAmount(int x, int y, boolean touch) {
-		if (x < this.x && x > -1 && y < this.y && y > -1) {
-			Piece piece = pieces[y][x];
-			Player currentPlayer = players.get(currentPlayerIndex);
-			if (piece != null) {
-				boolean ownPiece = currentPlayer.ownsPiece(piece);
-				if (!touch || ownPiece) {
-					if (!ownPiece) {
-						currentPlayer.addPoints(piece.getDotAmount());
-					}
-					removePieceFromPlayers(piece);
-					if (!piece.hasMaximumDots()) {
-						piece.setColor(currentPlayer.getColor());
-						piece.increaseDotAmount();
-						currentPlayer.addPiece(piece);
-					} else {
-						pieces[y][x] = null;
-						increaseDotAmount(x + 1, y);
-						increaseDotAmount(x, y + 1);
-						increaseDotAmount(x - 1, y);
-						increaseDotAmount(x, y - 1);
-					}
-					return true;
+		if (x < 0 || x >= this.width || y < 0 || y >= this.height) return false;
+
+		Piece piece = pieces[y][x];
+		Player currentPlayer = players.get(currentPlayerIndex);
+		if (piece != null) {
+			boolean ownPiece = currentPlayer.ownsPiece(piece);
+			if (!touch || ownPiece) {
+				if (!ownPiece) {
+					currentPlayer.addPoints(piece.getDotAmount());
 				}
-			} else if (!touch || hasNoPiece(currentPlayer)) {
-				Piece newp = new Piece(currentPlayer.getColor());
-				pieces[y][x] = newp;
-				currentPlayer.addPiece(newp);
+				removePieceFromPlayers(piece);
+				if (!piece.hasMaximumDots()) {
+					piece.setColor(currentPlayer.getColor());
+					piece.increaseDotAmount();
+					currentPlayer.addPiece(piece);
+				} else {
+					pieces[y][x] = null;
+					increaseDotAmount(x + 1, y);
+					increaseDotAmount(x, y + 1);
+					increaseDotAmount(x - 1, y);
+					increaseDotAmount(x, y - 1);
+				}
 				return true;
 			}
+			return false;
+		} else if (!touch || hasNoPiece(currentPlayer)) {
+			Piece newp = new Piece(currentPlayer.getColor());
+			pieces[y][x] = newp;
+			currentPlayer.addPiece(newp);
 		}
-		return false;
+		return true;
 	}
 
 	void removePieceFromPlayers(Piece piece) {
@@ -140,11 +132,11 @@ public class BoardActor extends Actor implements Board {
 		float heightBoard = getHeight();
 
 		if (widthBoard < heightBoard) {
-			fieldSize = (widthBoard - (2f * this.borderBoard) - ((this.x + 1f) * this.borderFields)) / this.x;
-			heightBoard = 2 * this.borderBoard + this.y * (this.borderFields + fieldSize);
+			fieldSize = (widthBoard - (2f * this.borderBoard) - ((this.width + 1f) * this.borderFields)) / this.width;
+			heightBoard = 2 * this.borderBoard + this.height * (this.borderFields + fieldSize);
 		} else {
-			fieldSize = (heightBoard - (2f * this.borderBoard) - ((this.y - 1f) * this.borderFields)) / this.y;
-			widthBoard = 2 * this.borderBoard + this.x * (this.borderFields + fieldSize);
+			fieldSize = (heightBoard - (2f * this.borderBoard) - ((this.height - 1f) * this.borderFields)) / this.height;
+			widthBoard = 2 * this.borderBoard + this.width * (this.borderFields + fieldSize);
 		}
 		this.pieceSize = this.fieldSize - (2 * this.pieceSpace);
 		setSize(widthBoard, heightBoard);
