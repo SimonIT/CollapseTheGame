@@ -1,6 +1,7 @@
 package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.Assets;
+import ch.asynk.gdx.boardgame.boards.Board;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -14,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Array;
 
-public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board {
+public class BoardActor extends Actor implements Board {
 
 	private Assets assets;
 	private Piece[][] pieces;
@@ -34,7 +35,7 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 	private Array<Player> players = new Array<>();
 	private int currentPlayerIndex = 0;
 
-	public Board(Assets assets, int x, int y) {
+	public BoardActor(Assets assets, int x, int y) {
 		this.players.add(new Player(Color.valueOf("eb3935"), "Simon"), new Player(Color.valueOf("679ed7"), "Nils")); // TODO dynamic
 		this.assets = assets;
 		this.pieces = new Piece[y][x];
@@ -186,12 +187,6 @@ public class Board extends Actor implements ch.asynk.gdx.boardgame.boards.Board 
 					batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
 				}
 			}
-		}
-	}
-
-	private void ensureLoadedAsset(String assetName) {
-		if (this.assets.isLoaded(assetName)) {
-			this.assets.finishLoadingAsset(assetName);
 		}
 	}
 }
