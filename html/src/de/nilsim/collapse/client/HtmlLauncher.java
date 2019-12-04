@@ -3,6 +3,7 @@ package de.nilsim.collapse.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.graphics.g2d.freetype.gwt.FreetypeInjector;
 import de.nilsim.collapse.CollapseTheGame;
 
 public class HtmlLauncher extends GwtApplication {
@@ -47,5 +48,10 @@ public class HtmlLauncher extends GwtApplication {
 	@Override
 	public ApplicationListener createApplicationListener() {
 		return new CollapseTheGame();
+	}
+
+	@Override
+	public void onModuleLoad () {
+		FreetypeInjector.inject(HtmlLauncher.super::onModuleLoad);
 	}
 }
