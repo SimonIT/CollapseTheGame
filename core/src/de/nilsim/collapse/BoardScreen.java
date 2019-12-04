@@ -14,7 +14,6 @@ public class BoardScreen extends ScreenAdapter {
 
 	BoardScreen(Assets assets) {
 		this.stage = new Stage(new ScreenViewport());
-		Gdx.input.setInputProcessor(stage);
 		this.board = new BoardActor(assets, 5, 7);
 		Table table = new Table();
 		table.setFillParent(true);
@@ -24,6 +23,7 @@ public class BoardScreen extends ScreenAdapter {
 
 	@Override
 	public void show() {
+		Gdx.input.setInputProcessor(stage);
 		Piece.diameter = Gdx.graphics.getWidth(); // TODO better
 	}
 
