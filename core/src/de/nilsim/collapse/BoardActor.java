@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Array;
 
 public class BoardActor extends Actor implements Board {
@@ -49,30 +47,17 @@ public class BoardActor extends Actor implements Board {
 	private void initialize() {
 		setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		setTouchable(Touchable.enabled);
-		addListener(new ActorGestureListener() {
-			@Override
-			public void tap(InputEvent event, float x, float y, int count, int button) {
-				int yPiece = MathUtils.floorPositive((y - borderBoard) / (fieldSize + borderFields));
-				int xPiece = MathUtils.floorPositive((x - borderBoard) / (fieldSize + borderFields));
-				if (increaseDotAmount(xPiece, yPiece, true)) {
-					Player player = players.get(currentPlayerIndex);
-					System.out.println(player.getName() + " " + player.getPoints());
-					currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
-				}
-			}
-
-			@Override
-			public boolean longPress(Actor actor, float x, float y) {
-				return true;
-			}
-		});
 	}
 
-	private boolean increaseDotAmount(int x, int y) {
+	void nextPlayer() {
+		currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
+	}
+
+	boolean increaseDotAmount(int x, int y) {
 		return increaseDotAmount(x, y, false);
 	}
 
-	private boolean increaseDotAmount(int x, int y, boolean touch) {
+	boolean increaseDotAmount(int x, int y, boolean touch) {
 		if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
 			if (!wrapWorld) return false;
 			x = (x + this.width) % this.width;
@@ -110,13 +95,13 @@ public class BoardActor extends Actor implements Board {
 		return false;
 	}
 
-	void removePieceFromPlayers(Piece piece) {
+	private void removePieceFromPlayers(Piece piece) {
 		for (Player player : this.players) {
 			player.removePiece(piece);
 		}
 	}
 
-	boolean hasNoPiece(Player player) {
+	private boolean hasNoPiece(Player player) {
 		for (Piece[] row : this.pieces) {
 			for (Piece piece : row) {
 				if (piece != null && player.ownsPiece(piece)) {
@@ -181,5 +166,17 @@ public class BoardActor extends Actor implements Board {
 				}
 			}
 		}
+	}
+
+	int getXFromPixels(float x) {
+		return MathUtils.floorPositive((x - borderBoard) / (fieldSize + borderFields));
+	}
+
+	int getYFromPixels(float y) {
+		return MathUtils.floorPositive((y - borderBoard) / (fieldSize + borderFields));
+	}
+
+	Player getCurrentPlayer() {
+		return players.get(currentPlayerIndex);
 	}
 }

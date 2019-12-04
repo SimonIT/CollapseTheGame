@@ -33,7 +33,7 @@ public class CollapseTheGame extends Game {
 		assets.load(AssetNames.bg, Texture.class);
 		assets.load(AssetNames.button, Texture.class);
 		assets.finishLoading();
-		this.boardScreen = new BoardScreen(this.assets);
+		this.boardScreen = new BoardScreen(this);
 		this.menuScreen = new MenuScreen(this);
 		setScreen(this.menuScreen);
 	}
