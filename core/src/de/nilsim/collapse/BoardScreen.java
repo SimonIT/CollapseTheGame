@@ -24,7 +24,7 @@ public class BoardScreen extends ScreenAdapter {
 		ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
 		playerLabel.put(new Player(Color.valueOf("eb3935"), "Simon"), new Label("0", new Label.LabelStyle(collapseTheGame.assets.getFont(AssetNames.font), Color.WHITE)));
 		playerLabel.put(new Player(Color.valueOf("679ed7"), "Nils"), new Label("0", new Label.LabelStyle(collapseTheGame.assets.getFont(AssetNames.font), Color.WHITE)));
-		this.board = new BoardActor(collapseTheGame.assets, 5, 7, playerLabel.keys().toArray());
+		this.board = new BoardActor(5, 7, playerLabel.keys().toArray());
 		this.board.addListener(new ActorGestureListener() {
 			@Override
 			public void tap(InputEvent event, float x, float y, int count, int button) {

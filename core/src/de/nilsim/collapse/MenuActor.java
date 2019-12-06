@@ -37,6 +37,7 @@ public class MenuActor extends Actor {
 		addListener(new ClickListener() {
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				super.touchUp(event, x, y, pointer, button);
 				if (menu.touch(x, y) && clickListener != null) {
 					clickListener.click(menu.touched());
 				}

@@ -1,6 +1,5 @@
 package de.nilsim.collapse;
 
-import ch.asynk.gdx.boardgame.Assets;
 import ch.asynk.gdx.boardgame.boards.Board;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 
 public class BoardActor extends Actor implements Board {
-	private Assets assets;
 	private Piece[][] pieces;
 	private int width, height;
 	private int borderBoard = 10;
@@ -26,9 +24,8 @@ public class BoardActor extends Actor implements Board {
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = true;
 
-	public BoardActor(Assets assets, int width, int height, Array<Player> players) {
+	public BoardActor(int width, int height, Array<Player> players) {
 		this.players = players;
-		this.assets = assets;
 		this.pieces = new Piece[height][width];
 		this.width = width;
 		this.height = height;

@@ -25,7 +25,7 @@ public class MenuScreen extends ScreenAdapter {
 				case 1:
 					System.out.println("Online");
 					break;
-				case 3:
+				case 2:
 					System.out.println("Einstellungen");
 					break;
 
