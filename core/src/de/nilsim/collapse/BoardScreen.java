@@ -2,12 +2,15 @@ package de.nilsim.collapse;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BoardScreen extends ScreenAdapter {
@@ -18,13 +21,16 @@ public class BoardScreen extends ScreenAdapter {
 	BoardScreen(CollapseTheGame collapseTheGame) {
 		this.collapseTheGame = collapseTheGame;
 		this.stage = new Stage(new ScreenViewport());
-		this.board = new BoardActor(collapseTheGame.assets, 5, 7);
+		ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
+		playerLabel.put(new Player(Color.valueOf("eb3935"), "Simon"), new Label("0", new Label.LabelStyle(collapseTheGame.assets.getFont(AssetNames.font), Color.WHITE)));
+		playerLabel.put(new Player(Color.valueOf("679ed7"), "Nils"), new Label("0", new Label.LabelStyle(collapseTheGame.assets.getFont(AssetNames.font), Color.WHITE)));
+		this.board = new BoardActor(collapseTheGame.assets, 5, 7, playerLabel.keys().toArray());
 		this.board.addListener(new ActorGestureListener() {
 			@Override
 			public void tap(InputEvent event, float x, float y, int count, int button) {
 				if (board.increaseDotAmount(board.getXFromPixels(x), board.getYFromPixels(y), true)) {
 					Player player = board.getCurrentPlayer();
-					System.out.println(player.getName() + " " + player.getPoints());
+					playerLabel.get(player).setText(String.valueOf(player.getPoints()));
 					board.nextPlayer();
 				}
 			}
@@ -35,6 +41,10 @@ public class BoardScreen extends ScreenAdapter {
 			}
 		});
 		Table table = new Table();
+		for (Label label : playerLabel.values()) {
+			table.add(label);
+		}
+		table.row();
 		table.setFillParent(true);
 		table.add(this.board);
 		this.stage.addActor(table);

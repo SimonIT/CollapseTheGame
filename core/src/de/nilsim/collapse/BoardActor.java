@@ -22,12 +22,12 @@ public class BoardActor extends Actor implements Board {
 	private int pieceSpace = 3;
 	private float fieldSize, pieceSize;
 	private Texture board, field;
-	private Array<Player> players = new Array<>();
+	private Array<Player> players;
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = true;
 
-	public BoardActor(Assets assets, int width, int height) {
-		this.players.add(new Player(Color.valueOf("eb3935"), "Simon"), new Player(Color.valueOf("679ed7"), "Nils")); // TODO dynamic
+	public BoardActor(Assets assets, int width, int height, Array<Player> players) {
+		this.players = players;
 		this.assets = assets;
 		this.pieces = new Piece[height][width];
 		this.width = width;
