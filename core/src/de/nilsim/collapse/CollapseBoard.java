@@ -1,19 +1,17 @@
 package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.boards.Board;
-import com.badlogic.gdx.Gdx;
+import ch.asynk.gdx.boardgame.ui.Element;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 
-public class BoardActor extends Actor implements Board {
-	private Piece[][] pieces;
+public class CollapseBoard extends Element implements Board {
+	private CollapsePiece[][] pieces;
 	private int width, height;
 	private int borderBoard = 10;
 	private int borderFields = 2;
@@ -24,9 +22,9 @@ public class BoardActor extends Actor implements Board {
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = true;
 
-	public BoardActor(int width, int height, Array<Player> players) {
+	public CollapseBoard(int width, int height, Array<Player> players) {
 		this.players = players;
-		this.pieces = new Piece[height][width];
+		this.pieces = new CollapsePiece[height][width];
 		this.width = width;
 		this.height = height;
 
@@ -38,30 +36,25 @@ public class BoardActor extends Actor implements Board {
 		fp.setColor(Color.valueOf("fbf297"));
 		fp.fillRectangle(0, 0, 1, 1);
 		this.field = new Texture(fp);
-		initialize();
-	}
-
-	private void initialize() {
-		setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		setTouchable(Touchable.enabled);
+		System.out.println(getX());
 	}
 
 	void nextPlayer() {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
 	}
 
-	boolean increaseDotAmount(int x, int y) {
-		return increaseDotAmount(x, y, false);
+	boolean increaseDotAmount(Vector2 v) {
+		return increaseDotAmount(v, false);
 	}
 
-	boolean increaseDotAmount(int x, int y, boolean touch) {
-		if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+	boolean increaseDotAmount(Vector2 v, boolean touch) {
+		if (v.x < 0 || v.x >= this.width || v.y < 0 || v.y >= this.height) {
 			if (!wrapWorld) return false;
-			x = (x + this.width) % this.width;
-			y = (y + this.height) % this.height;
+			v.x = (v.x + this.width) % this.width;
+			v.y = (v.y + this.height) % this.height;
 		}
 
-		Piece piece = pieces[y][x];
+		CollapsePiece piece = pieces[(int) v.y][(int) v.x];
 		Player currentPlayer = players.get(this.currentPlayerIndex);
 		if (piece != null) {
 			boolean ownPiece = currentPlayer.ownsPiece(piece);
@@ -75,32 +68,32 @@ public class BoardActor extends Actor implements Board {
 					piece.increaseDotAmount();
 					currentPlayer.addPiece(piece);
 				} else {
-					pieces[y][x] = null;
-					increaseDotAmount(x + 1, y);
-					increaseDotAmount(x, y + 1);
-					increaseDotAmount(x - 1, y);
-					increaseDotAmount(x, y - 1);
+					pieces[(int) v.y][(int) v.x] = null;
+					increaseDotAmount(new Vector2(v.x + 1, v.y));
+					increaseDotAmount(new Vector2(v.x, v.y + 1));
+					increaseDotAmount(new Vector2(v.x - 1, v.y));
+					increaseDotAmount(new Vector2(v.x, v.y - 1));
 				}
 				return true;
 			}
 		} else if (!touch || hasNoPiece(currentPlayer)) {
-			Piece newPiece = new Piece(currentPlayer.getColor());
-			pieces[y][x] = newPiece;
+			CollapsePiece newPiece = new CollapsePiece(currentPlayer.getColor());
+			pieces[(int) v.y][(int) v.x] = newPiece;
 			currentPlayer.addPiece(newPiece);
 			return true;
 		}
 		return false;
 	}
 
-	private void removePieceFromPlayers(Piece piece) {
+	private void removePieceFromPlayers(CollapsePiece piece) {
 		for (Player player : this.players) {
 			player.removePiece(piece);
 		}
 	}
 
 	private boolean hasNoPiece(Player player) {
-		for (Piece[] row : this.pieces) {
-			for (Piece piece : row) {
+		for (CollapsePiece[] row : this.pieces) {
+			for (CollapsePiece piece : row) {
 				if (piece != null && player.ownsPiece(piece)) {
 					return false;
 				}
@@ -110,19 +103,20 @@ public class BoardActor extends Actor implements Board {
 	}
 
 	@Override
-	protected void sizeChanged() {
-		float widthBoard = getWidth();
-		float heightBoard = getHeight();
+	protected void computeGeometry() {
+		super.computeGeometry();
+		float widthBoard = getWidth() == 0 ? parent.getWidth() : getWidth();
+		float heightBoard = getHeight() == 0 ? parent.getHeight() : getHeight();
 
 		if (widthBoard < heightBoard) {
-			fieldSize = (widthBoard - (2f * this.borderBoard) - ((this.width + 1f) * this.borderFields)) / this.width;
+			this.fieldSize = (widthBoard - (2f * this.borderBoard) - ((this.width + 1f) * this.borderFields)) / this.width;
 			heightBoard = 2 * this.borderBoard + this.height * (this.borderFields + fieldSize);
 		} else {
-			fieldSize = (heightBoard - (2f * this.borderBoard) - ((this.height - 1f) * this.borderFields)) / this.height;
+			this.fieldSize = (heightBoard - (2f * this.borderBoard) - ((this.height - 1f) * this.borderFields)) / this.height;
 			widthBoard = 2 * this.borderBoard + this.width * (this.borderFields + fieldSize);
 		}
 		this.pieceSize = this.fieldSize - (2 * this.pieceSpace);
-		setSize(widthBoard, heightBoard);
+		this.rect.setSize(widthBoard, heightBoard);
 	}
 
 	@Override
@@ -137,7 +131,7 @@ public class BoardActor extends Actor implements Board {
 
 	@Override
 	public void toBoard(float x, float y, Vector2 v) {
-
+		v.set(MathUtils.floorPositive((x - getX() - borderBoard) / (fieldSize + borderFields)), MathUtils.floorPositive((y - getY() - borderBoard) / (fieldSize + borderFields)));
 	}
 
 	@Override
@@ -145,12 +139,19 @@ public class BoardActor extends Actor implements Board {
 		return 0;
 	}
 
-	void addPiece(int x, int y, Piece piece) {
+	void addPiece(int x, int y, CollapsePiece piece) {
 		this.pieces[y][x] = piece;
 	}
 
+	Player getCurrentPlayer() {
+		return players.get(currentPlayerIndex);
+	}
+
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	public void draw(Batch batch) {
+		if (!visible) return;
+		if (tainted) computeGeometry();
+
 		batch.draw(this.board, getX(), getY(), getWidth(), getHeight());
 
 		for (int i = 0; i < this.pieces.length; i++) {
@@ -163,17 +164,5 @@ public class BoardActor extends Actor implements Board {
 				}
 			}
 		}
-	}
-
-	int getXFromPixels(float x) {
-		return MathUtils.floorPositive((x - borderBoard) / (fieldSize + borderFields));
-	}
-
-	int getYFromPixels(float y) {
-		return MathUtils.floorPositive((y - borderBoard) / (fieldSize + borderFields));
-	}
-
-	Player getCurrentPlayer() {
-		return players.get(currentPlayerIndex);
 	}
 }

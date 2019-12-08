@@ -34,7 +34,21 @@ public class CollapseTheGame extends Game {
 		assets.load(AssetNames.button, Texture.class);
 		assets.finishLoading();
 		this.boardScreen = new BoardScreen(this);
-		this.menuScreen = new MenuScreen(this);
+		this.menuScreen = new MenuScreen(this, "Menü", new String[]{"Lokal", "Online", "Einstellungen"});
+		this.menuScreen.setClickListener(menu -> {
+			switch (menu) {
+				case 0:
+					this.setScreen(this.boardScreen);
+					break;
+				case 1:
+					System.out.println("Online");
+					break;
+				case 2:
+					System.out.println("Einstellungen");
+					break;
+
+			}
+		});
 		setScreen(this.menuScreen);
 	}
 

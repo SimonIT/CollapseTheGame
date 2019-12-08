@@ -1,80 +1,52 @@
 package de.nilsim.collapse;
 
+import ch.asynk.gdx.boardgame.ui.Alignment;
+import ch.asynk.gdx.boardgame.ui.Label;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class BoardScreen extends ScreenAdapter {
-	private CollapseTheGame collapseTheGame;
-	private Stage stage;
-	private BoardActor board;
+public class BoardScreen extends AbstractScreen {
+	private CollapseBoard board;
+	private ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
+	private Vector2 v;
 
 	BoardScreen(CollapseTheGame collapseTheGame) {
-		this.collapseTheGame = collapseTheGame;
-		this.stage = new Stage(new ScreenViewport());
-		ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
-		playerLabel.put(new Player(Color.valueOf("eb3935"), "Simon"), new Label("0", new Label.LabelStyle(collapseTheGame.assets.getFont(AssetNames.font), Color.WHITE)));
-		playerLabel.put(new Player(Color.valueOf("679ed7"), "Nils"), new Label("0", new Label.LabelStyle(collapseTheGame.assets.getFont(AssetNames.font), Color.WHITE)));
-		this.board = new BoardActor(5, 7, playerLabel.keys().toArray());
-		this.board.addListener(new ActorGestureListener() {
-			@Override
-			public void tap(InputEvent event, float x, float y, int count, int button) {
-				if (board.increaseDotAmount(board.getXFromPixels(x), board.getYFromPixels(y), true)) {
-					Player player = board.getCurrentPlayer();
-					playerLabel.get(player).setText(String.valueOf(player.getPoints()));
-					board.nextPlayer();
-				}
-			}
-
-			@Override
-			public boolean longPress(Actor actor, float x, float y) {
-				return true;
-			}
-		});
-		Table table = new Table();
+		super(collapseTheGame);
+		this.v = new Vector2();
+		this.playerLabel.put(new Player(Color.valueOf("eb3935"), "Simon"), new Label(app.assets.getFont(AssetNames.font)));
+		this.playerLabel.put(new Player(Color.valueOf("679ed7"), "Nils"), new Label(app.assets.getFont(AssetNames.font)));
 		for (Label label : playerLabel.values()) {
-			table.add(label);
+			this.root.add(label);
 		}
-		table.row();
-		table.setFillParent(true);
-		table.add(this.board);
-		this.stage.addActor(table);
+		this.board = new CollapseBoard(5, 7, playerLabel.keys().toArray());
+		this.board.setAlignment(Alignment.MIDDLE_CENTER);
+		this.root.add(this.board);
 	}
 
 	@Override
 	public void show() {
-		Gdx.input.setInputProcessor(stage);
-		Piece.diameter = Gdx.graphics.getWidth(); // TODO better
+		super.show();
+		CollapsePiece.diameter = Gdx.graphics.getWidth(); // TODO better
 	}
 
 	@Override
-	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 0);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		this.stage.getBatch().begin();
-		this.stage.getBatch().draw(collapseTheGame.assets.getTexture("bg.png"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		this.stage.getBatch().end();
-		this.stage.act(Gdx.graphics.getDeltaTime());
-		this.stage.draw();
+	protected void onTouch(int x, int y) {
+		super.onTouch(x, y);
+		this.board.toBoard(touch.x, touch.y, this.v);
+		if (this.board.increaseDotAmount(this.v, true)) {
+			Player player = this.board.getCurrentPlayer();
+			this.playerLabel.get(player).write(String.valueOf(player.getPoints()));
+			this.board.nextPlayer();
+		}
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		this.stage.getViewport().update(width, height, true);
-		this.board.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	protected void onZoom(float dz) {
 	}
 
 	@Override
-	public void dispose() {
-		this.stage.dispose();
+	protected void onDragged(int dx, int dy) {
 	}
 }

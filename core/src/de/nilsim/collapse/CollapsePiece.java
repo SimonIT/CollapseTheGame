@@ -1,23 +1,24 @@
 package de.nilsim.collapse;
 
+import ch.asynk.gdx.boardgame.Piece;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
-public class Piece extends ch.asynk.gdx.boardgame.Piece {
+public class CollapsePiece extends Piece {
 	public static int diameter;
 	private int dotAmount = 1;
 	private Color color;
 	private Pixmap pieceDrawer;
 
-	public Piece(Color color) {
+	public CollapsePiece(Color color) {
 		super(new Texture(new Pixmap(0, 0, Pixmap.Format.RGBA8888)));
 		this.pieceDrawer = new Pixmap(diameter, diameter, Pixmap.Format.RGBA8888);
 		this.color = color;
 		updateTexture();
 	}
 
-	public Piece(Color color, int dotAmount) {
+	public CollapsePiece(Color color, int dotAmount) {
 		super(new Texture(new Pixmap(0, 0, Pixmap.Format.RGBA8888)));
 		this.pieceDrawer = new Pixmap(diameter, diameter, Pixmap.Format.RGBA8888);
 		this.color = color;

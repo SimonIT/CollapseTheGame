@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 public class Player {
 	private Color color;
 	private String name;
-	private Array<Piece> pieces = new Array<>();
+	private Array<CollapsePiece> pieces = new Array<>();
 	private long points;
 
 	public Player(Color color, String name) {
@@ -18,17 +18,17 @@ public class Player {
 		return this.name;
 	}
 
-	public void addPiece(Piece piece) {
+	public void addPiece(CollapsePiece piece) {
 		if (!this.pieces.contains(piece, true)) {
 			this.pieces.add(piece);
 		}
 	}
 
-	public void removePiece(Piece piece) {
+	public void removePiece(CollapsePiece piece) {
 		this.pieces.removeValue(piece, true);
 	}
 
-	public boolean ownsPiece(Piece piece) {
+	public boolean ownsPiece(CollapsePiece piece) {
 		return this.pieces.contains(piece, true);
 	}
 
