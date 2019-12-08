@@ -52,6 +52,6 @@ public class HtmlLauncher extends GwtApplication {
 
 	@Override
 	public void onModuleLoad () {
-		FreetypeInjector.inject(HtmlLauncher.super::onModuleLoad);
+		FreetypeInjector.inject(super::onModuleLoad);
 	}
 }
