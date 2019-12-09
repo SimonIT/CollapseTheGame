@@ -15,8 +15,8 @@ public class BoardScreen extends AbstractScreen {
 	BoardScreen(CollapseTheGame collapseTheGame) {
 		super(collapseTheGame);
 		this.v = new Vector2();
-		this.playerLabel.put(new Player(Color.valueOf("eb3935"), "Simon"), new Label(app.assets.getFont(AssetNames.font)));
-		this.playerLabel.put(new Player(Color.valueOf("679ed7"), "Nils"), new Label(app.assets.getFont(AssetNames.font)));
+		this.playerLabel.put(new Player(1, Color.valueOf("eb3935"), "Simon"), new Label(app.assets.getFont(AssetNames.font)));
+		this.playerLabel.put(new Player(2, Color.valueOf("679ed7"), "Nils"), new Label(app.assets.getFont(AssetNames.font)));
 		for (Label label : playerLabel.values()) {
 			this.root.add(label);
 		}

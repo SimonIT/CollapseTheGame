@@ -56,16 +56,15 @@ public class CollapseBoard extends Element implements Board {
 		CollapsePiece piece = pieces[(int) v.y][(int) v.x];
 		Player currentPlayer = players.get(this.currentPlayerIndex);
 		if (piece != null) {
-			boolean ownPiece = currentPlayer.ownsPiece(piece);
+			boolean ownPiece = currentPlayer.getId() == piece.getOwnerId();
 			if (!touch || ownPiece) {
 				if (!ownPiece) {
 					currentPlayer.addPoints(piece.getDotAmount());
 				}
-				removePieceFromPlayers(piece);
 				if (!piece.hasMaximumDots()) {
 					piece.setColor(currentPlayer.getColor());
+					piece.setOwnerId(currentPlayer.getId());
 					piece.increaseDotAmount();
-					currentPlayer.addPiece(piece);
 				} else {
 					pieces[(int) v.y][(int) v.x] = null;
 					increaseDotAmount(new Vector2(v.x + 1, v.y));
@@ -76,24 +75,17 @@ public class CollapseBoard extends Element implements Board {
 				return true;
 			}
 		} else if (!touch || hasNoPiece(currentPlayer)) {
-			CollapsePiece newPiece = new CollapsePiece(currentPlayer.getColor());
+			CollapsePiece newPiece = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
 			pieces[(int) v.y][(int) v.x] = newPiece;
-			currentPlayer.addPiece(newPiece);
 			return true;
 		}
 		return false;
 	}
 
-	private void removePieceFromPlayers(CollapsePiece piece) {
-		for (Player player : this.players) {
-			player.removePiece(piece);
-		}
-	}
-
 	private boolean hasNoPiece(Player player) {
 		for (CollapsePiece[] row : this.pieces) {
 			for (CollapsePiece piece : row) {
-				if (piece != null && player.ownsPiece(piece)) {
+				if (piece != null && piece.getOwnerId() == player.getId()) {
 					return false;
 				}
 			}

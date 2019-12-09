@@ -4,32 +4,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
 public class Player {
+	private int id;
 	private Color color;
 	private String name;
-	private Array<CollapsePiece> pieces = new Array<>();
 	private long points;
 
-	public Player(Color color, String name) {
+	public Player(int id, Color color, String name) {
+		this.id = id;
 		this.color = color;
 		this.name = name;
 	}
 
 	public String getName() {
 		return this.name;
-	}
-
-	public void addPiece(CollapsePiece piece) {
-		if (!this.pieces.contains(piece, true)) {
-			this.pieces.add(piece);
-		}
-	}
-
-	public void removePiece(CollapsePiece piece) {
-		this.pieces.removeValue(piece, true);
-	}
-
-	public boolean ownsPiece(CollapsePiece piece) {
-		return this.pieces.contains(piece, true);
 	}
 
 	public Color getColor() {
@@ -42,5 +29,13 @@ public class Player {
 
 	public long getPoints() {
 		return this.points;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

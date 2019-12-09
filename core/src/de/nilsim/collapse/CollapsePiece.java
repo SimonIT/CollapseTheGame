@@ -7,20 +7,24 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class CollapsePiece extends Piece {
 	public static int diameter;
-	private int dotAmount = 1;
+	private int ownerId;
 	private Color color;
+	private int dotAmount;
 	private Pixmap pieceDrawer;
 
-	public CollapsePiece(Color color) {
+	public CollapsePiece(int ownerId, Color color) {
 		super(new Texture(new Pixmap(0, 0, Pixmap.Format.RGBA8888)));
 		this.pieceDrawer = new Pixmap(diameter, diameter, Pixmap.Format.RGBA8888);
+		this.ownerId = ownerId;
 		this.color = color;
+		this.dotAmount = 1;
 		updateTexture();
 	}
 
-	public CollapsePiece(Color color, int dotAmount) {
+	public CollapsePiece(int ownerId, Color color, int dotAmount) {
 		super(new Texture(new Pixmap(0, 0, Pixmap.Format.RGBA8888)));
 		this.pieceDrawer = new Pixmap(diameter, diameter, Pixmap.Format.RGBA8888);
+		this.ownerId = ownerId;
 		this.color = color;
 		this.dotAmount = dotAmount;
 		updateTexture();
@@ -75,5 +79,13 @@ public class CollapsePiece extends Piece {
 
 	public boolean hasMaximumDots() {
 		return this.dotAmount == 3;
+	}
+
+	public int getOwnerId() {
+		return this.ownerId;
+	}
+
+	public void setOwnerId(int ownerId) {
+		this.ownerId = ownerId;
 	}
 }
