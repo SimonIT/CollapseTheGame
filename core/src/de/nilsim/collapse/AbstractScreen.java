@@ -36,14 +36,14 @@ public abstract class AbstractScreen implements Screen {
 		this.inputBlocked = false;
 		this.inputDelay = 0f;
 		this.paused = false;
-
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		this.camera = new OrthographicCamera();
 	}
 
+	/**
+	 * May override for custom drawings
+	 * @param batch
+	 */
 	protected void draw(SpriteBatch batch) {
-		batch.draw(bg, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		root.draw(batch);
 	}
 
 	@Override
@@ -56,6 +56,7 @@ public abstract class AbstractScreen implements Screen {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		batch.draw(bg, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		draw(batch);
 		root.draw(batch);
 		batch.end();
@@ -63,7 +64,8 @@ public abstract class AbstractScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		root.resize(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		root.resize(0, 0, width, height);
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override
