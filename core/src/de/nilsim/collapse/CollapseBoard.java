@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -23,6 +22,7 @@ public class CollapseBoard extends Element implements Board {
 	private boolean wrapWorld = true;
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
+		super();
 		this.players = players;
 		this.pieces = new CollapsePiece[height][width];
 		this.width = width;

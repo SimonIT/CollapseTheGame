@@ -41,6 +41,7 @@ public abstract class AbstractScreen implements Screen {
 
 	/**
 	 * May override for custom drawings
+	 *
 	 * @param batch
 	 */
 	protected void draw(SpriteBatch batch) {
@@ -65,7 +66,7 @@ public abstract class AbstractScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		root.resize(0, 0, width, height);
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(false, width, height);
 	}
 
 	@Override
@@ -94,10 +95,7 @@ public abstract class AbstractScreen implements Screen {
 		paused = false;
 	}
 
-	protected void onTouch(int x, int y) {
-		touch.set(x, y, 0);
-		camera.unproject(touch);
-	}
+	protected abstract void onTouch(int x, int y);
 
 	protected abstract void onZoom(float dz);
 
@@ -117,6 +115,8 @@ public abstract class AbstractScreen implements Screen {
 				if (inputBlocked) return true;
 				if (button == Input.Buttons.LEFT) {
 					dragPos.set(x, y);
+					touch.set(x, y, 0);
+					camera.unproject(touch);
 					onTouch(x, y);
 				}
 				return true;
@@ -145,5 +145,21 @@ public abstract class AbstractScreen implements Screen {
 		}));
 
 		return multiplexer;
+	}
+
+	@Override
+	public String toString() {
+		return "AbstractScreen{" +
+				"dragPos=" + dragPos +
+				", touch=" + touch +
+				", app=" + app +
+				", batch=" + batch +
+				", bg=" + bg +
+				", root=" + root +
+				", camera=" + camera +
+				", inputBlocked=" + inputBlocked +
+				", inputDelay=" + inputDelay +
+				", paused=" + paused +
+				'}';
 	}
 }

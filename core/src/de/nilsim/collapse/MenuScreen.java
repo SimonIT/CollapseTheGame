@@ -6,7 +6,7 @@ import ch.asynk.gdx.boardgame.ui.Menu;
 public class MenuScreen extends AbstractScreen {
 
 	private Menu menu;
-	private MenuActorClickListener clickListener;
+	private MenuClickListener clickListener;
 
 	MenuScreen(CollapseTheGame collapseTheGame, String title, String[] menuPoints) {
 		super(collapseTheGame);
@@ -22,13 +22,12 @@ public class MenuScreen extends AbstractScreen {
 		this.root.add(this.menu);
 	}
 
-	public void setClickListener(MenuActorClickListener clickListener) {
+	public void setClickListener(MenuClickListener clickListener) {
 		this.clickListener = clickListener;
 	}
 
 	@Override
 	protected void onTouch(int x, int y) {
-		super.onTouch(x, y);
 		if (menu.touch(touch.x, touch.y) && clickListener != null) {
 			clickListener.click(menu.touched());
 		}
@@ -44,7 +43,7 @@ public class MenuScreen extends AbstractScreen {
 
 	}
 
-	public interface MenuActorClickListener {
+	public interface MenuClickListener {
 		void click(int menu);
 	}
 }
