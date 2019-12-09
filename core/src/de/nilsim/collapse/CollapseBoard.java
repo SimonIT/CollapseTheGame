@@ -103,7 +103,6 @@ public class CollapseBoard extends Element implements Board {
 
 	@Override
 	protected void computeGeometry() {
-		super.computeGeometry();
 		float widthBoard = getWidth() == 0 ? parent.getWidth() : getWidth();
 		float heightBoard = getHeight() == 0 ? parent.getHeight() : getHeight();
 
@@ -116,6 +115,7 @@ public class CollapseBoard extends Element implements Board {
 		}
 		this.pieceSize = this.fieldSize - (2 * this.pieceSpace);
 		this.rect.setSize(widthBoard, heightBoard);
+		super.computeGeometry();
 	}
 
 	@Override
