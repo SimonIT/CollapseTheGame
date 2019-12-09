@@ -3,8 +3,8 @@ package de.nilsim.collapse;
 import ch.asynk.gdx.boardgame.ui.Alignment;
 import ch.asynk.gdx.boardgame.ui.Label;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class BoardScreen extends AbstractScreen {
@@ -12,13 +12,13 @@ public class BoardScreen extends AbstractScreen {
 	private ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
 	private Vector2 v;
 
-	BoardScreen(CollapseTheGame collapseTheGame) {
+	BoardScreen(CollapseTheGame collapseTheGame, Array<Player> players) {
 		super(collapseTheGame);
 		this.v = new Vector2();
-		this.playerLabel.put(new Player(1, Color.valueOf("eb3935"), "Simon"), new Label(app.assets.getFont(AssetNames.font)));
-		this.playerLabel.put(new Player(2, Color.valueOf("679ed7"), "Nils"), new Label(app.assets.getFont(AssetNames.font)));
-		for (Label label : playerLabel.values()) {
+		for (Player player : players) {
+			Label label = new Label(app.assets.getFont(AssetNames.font));
 			this.root.add(label);
+			this.playerLabel.put(player, label);
 		}
 		this.board = new CollapseBoard(5, 7, playerLabel.keys().toArray());
 		this.board.setAlignment(Alignment.MIDDLE_CENTER);

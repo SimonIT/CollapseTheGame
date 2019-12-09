@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 public class CollapseTheGame extends Game {
 
 	MenuScreen menuScreen;
+	PlayerScreen playerScreen;
 	BoardScreen boardScreen;
 	Assets assets = new Assets();
 
@@ -33,12 +34,12 @@ public class CollapseTheGame extends Game {
 		assets.load(AssetNames.bg, Texture.class);
 		assets.load(AssetNames.button, Texture.class);
 		assets.finishLoading();
-		this.boardScreen = new BoardScreen(this);
+		this.playerScreen = new PlayerScreen(this);
 		this.menuScreen = new MenuScreen(this, "Menü", new String[]{"Lokal", "Online", "Einstellungen"});
 		this.menuScreen.setClickListener(menu -> {
 			switch (menu) {
 				case 0:
-					this.setScreen(this.boardScreen);
+					this.setScreen(this.playerScreen);
 					break;
 				case 1:
 					System.out.println("Online");
