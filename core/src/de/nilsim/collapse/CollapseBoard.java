@@ -36,7 +36,6 @@ public class CollapseBoard extends Element implements Board {
 		fp.setColor(Color.valueOf("fbf297"));
 		fp.fillRectangle(0, 0, 1, 1);
 		this.field = new Texture(fp);
-		System.out.println(getX());
 	}
 
 	void nextPlayer() {
@@ -49,7 +48,7 @@ public class CollapseBoard extends Element implements Board {
 
 	boolean increaseDotAmount(Vector2 v, boolean touch) {
 		if (v.x < 0 || v.x >= this.width || v.y < 0 || v.y >= this.height) {
-			if (!wrapWorld) return false;
+			if (!wrapWorld || touch) return false;
 			v.x = (v.x + this.width) % this.width;
 			v.y = (v.y + this.height) % this.height;
 		}
@@ -131,7 +130,8 @@ public class CollapseBoard extends Element implements Board {
 
 	@Override
 	public void toBoard(float x, float y, Vector2 v) {
-		v.set(MathUtils.floorPositive((x - getX() - borderBoard) / (fieldSize + borderFields)), MathUtils.floorPositive((y - getY() - borderBoard) / (fieldSize + borderFields)));
+		v.x = (x - getX() - borderBoard) / (fieldSize + borderFields);
+		v.y = (y - getY() - borderBoard) / (fieldSize + borderFields);
 	}
 
 	@Override
