@@ -34,7 +34,7 @@ public class BoardScreen extends AbstractScreen {
 	@Override
 	protected void onTouch(int x, int y) {
 		this.board.toBoard(this.touch.x, this.touch.y, this.v);
-		if (this.board.increaseDotAmount(this.v, true)) {
+		if (this.board.increaseDotAmount(this.v)) {
 			Player player = this.board.getCurrentPlayer();
 			this.playerLabel.get(player).write(String.valueOf(player.getPoints()));
 			this.board.nextPlayer();

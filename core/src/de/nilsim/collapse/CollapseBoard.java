@@ -9,7 +9,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 public class CollapseBoard extends Element implements Board {
+	private static int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 	private CollapsePiece[][] pieces;
 	private int width, height;
 	private int borderBoard = 10;
@@ -42,44 +47,62 @@ public class CollapseBoard extends Element implements Board {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
 	}
 
-	boolean increaseDotAmount(Vector2 v) {
-		return increaseDotAmount(v, false);
+
+	boolean on_grid(Vector2 v) {
+		return v.x > -1 && v.x < this.width && v.y > -1 && v.y < this.height;
 	}
 
-	boolean increaseDotAmount(Vector2 v, boolean touch) {
-		if (v.x < 0 || v.x >= this.width || v.y < 0 || v.y >= this.height) {
-			if (!wrapWorld || touch) return false;
-			v.x = (v.x + this.width) % this.width;
-			v.y = (v.y + this.height) % this.height;
+	boolean increaseDotAmount(Vector2 v) {
+		if (!on_grid(v)) {
+			return false;
+		}
+		Player currentPlayer = players.get(this.currentPlayerIndex);
+
+		if (pieces[(int) v.y][(int) v.x] == null) {
+			if (!hasNoPiece(currentPlayer)) {
+				return false;
+			}
+		} else if (pieces[(int) v.y][(int) v.x].getOwnerId() != currentPlayer.getId()) {
+			return false;
 		}
 
-		CollapsePiece piece = pieces[(int) v.y][(int) v.x];
-		Player currentPlayer = players.get(this.currentPlayerIndex);
-		if (piece != null) {
-			boolean ownPiece = currentPlayer.getId() == piece.getOwnerId();
-			if (!touch || ownPiece) {
-				if (!ownPiece) {
-					currentPlayer.addPoints(piece.getDotAmount());
-				}
-				if (!piece.hasMaximumDots()) {
-					piece.setColor(currentPlayer.getColor());
-					piece.setOwnerId(currentPlayer.getId());
-					piece.increaseDotAmount();
-				} else {
-					pieces[(int) v.y][(int) v.x] = null;
-					increaseDotAmount(new Vector2(v.x + 1, v.y));
-					increaseDotAmount(new Vector2(v.x, v.y + 1));
-					increaseDotAmount(new Vector2(v.x - 1, v.y));
-					increaseDotAmount(new Vector2(v.x, v.y - 1));
-				}
-				return true;
-			}
-		} else if (!touch || hasNoPiece(currentPlayer)) {
-			CollapsePiece newPiece = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
-			pieces[(int) v.y][(int) v.x] = newPiece;
-			return true;
+		if (pieces[(int) v.y][(int) v.x] == null) {
+			pieces[(int) v.y][(int) v.x] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
+		} else {
+			pieces[(int) v.y][(int) v.x].increaseDotAmount();
 		}
-		return false;
+
+		if (pieces[(int) v.y][(int) v.x].getDotAmount() > 3) {
+			Set<Vector2> frontier = new HashSet<>();
+			frontier.add(v);
+			while (frontier.size() > 0) {
+				Set<Vector2> newFrontier = new HashSet<>();
+				for (Vector2 pos : frontier) {
+					CollapsePiece piece = pieces[(int) pos.y][(int) pos.x];
+
+					for (int i = 0; i < 4; ++i) {
+						Vector2 newPos = new Vector2(pos.x + neighbors[i][0], pos.y + neighbors[i][1]);
+						if (wrapWorld || on_grid(newPos)) {
+							newPos.x = (newPos.x + this.width) % this.width;
+							newPos.y = (newPos.y + this.height) % this.height;
+							if (pieces[(int) newPos.y][(int) newPos.x] == null) {
+								pieces[(int) newPos.y][(int) newPos.x] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
+							} else {
+								pieces[(int) newPos.y][(int) newPos.x].increaseDotAmount();
+							}
+							pieces[(int) newPos.y][(int) newPos.x].setOwnerId(currentPlayer.getId());
+							pieces[(int) newPos.y][(int) newPos.x].setColor(currentPlayer.getColor());
+							if (pieces[(int) newPos.y][(int) newPos.x].getDotAmount() > 3) {
+								newFrontier.add(newPos);
+							}
+						}
+					}
+					pieces[(int) pos.y][(int) pos.x] = null;
+				}
+				frontier = newFrontier;
+			}
+		}
+		return true;
 	}
 
 	private boolean hasNoPiece(Player player) {

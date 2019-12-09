@@ -65,8 +65,7 @@ public class CollapsePiece extends Piece {
 	}
 
 	public void setDotAmount(int dotAmount) {
-		if (dotAmount > 3) throw new IllegalArgumentException("A piece can have only 3 dots");
-		if (dotAmount < 1) throw new IllegalArgumentException("A piece must have min. 1 dot");
+		if (dotAmount < 1) throw new IllegalArgumentException("A piece must have at least 1 dot");
 		if (this.dotAmount != dotAmount) {
 			this.dotAmount = dotAmount;
 			updateTexture();
