@@ -8,11 +8,15 @@ public class Player {
 	private Color color;
 	private String name;
 	private long points;
+	private boolean alive;
+	private boolean firstMove;
 
 	public Player(int id, Color color, String name) {
 		this.id = id;
 		this.color = color;
 		this.name = name;
+		this.alive = true;
+		this.firstMove = true;
 	}
 
 	public String getName() {
@@ -37,5 +41,19 @@ public class Player {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public boolean getAlive() {
+		return this.alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+
+	public boolean getFirstMove() {return this.firstMove;}
+
+	public void setFirstMove(boolean firstMove) {
+		this.firstMove = firstMove;
 	}
 }

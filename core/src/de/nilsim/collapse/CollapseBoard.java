@@ -45,9 +45,10 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	void nextPlayer() {
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
+		do {
+			currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
+		} while (!this.players.get(currentPlayerIndex).getAlive());
 	}
-
 
 	boolean on_grid(Vector2 v) {
 		return v.x > -1 && v.x < this.width && v.y > -1 && v.y < this.height;
@@ -57,11 +58,11 @@ public class CollapseBoard extends Element implements Board {
 		if (!on_grid(v)) {
 			return false;
 		}
-		Player currentPlayer = players.get(this.currentPlayerIndex);
+		Player currentPlayer = this.players.get(this.currentPlayerIndex);
 		CollapsePiece currentPiece = pieces[(int) v.y][(int) v.x];
 
 		if (currentPiece == null) {
-			if (!hasNoPiece(currentPlayer)) {
+			if (!currentPlayer.getFirstMove()) {
 				return false;
 			}
 			pieces[(int) v.y][(int) v.x] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
@@ -106,17 +107,7 @@ public class CollapseBoard extends Element implements Board {
 				frontier = newFrontier;
 			}
 		}
-		return true;
-	}
-
-	private boolean hasNoPiece(Player player) {
-		for (CollapsePiece[] row : this.pieces) {
-			for (CollapsePiece piece : row) {
-				if (piece != null && piece.getOwnerId() == player.getId()) {
-					return false;
-				}
-			}
-		}
+		currentPlayer.setFirstMove(false);
 		return true;
 	}
 
