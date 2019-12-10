@@ -58,22 +58,21 @@ public class CollapseBoard extends Element implements Board {
 			return false;
 		}
 		Player currentPlayer = players.get(this.currentPlayerIndex);
+		CollapsePiece currentPiece = pieces[(int) v.y][(int) v.x];
 
-		if (pieces[(int) v.y][(int) v.x] == null) {
+		if (currentPiece == null) {
 			if (!hasNoPiece(currentPlayer)) {
 				return false;
 			}
-		} else if (pieces[(int) v.y][(int) v.x].getOwnerId() != currentPlayer.getId()) {
-			return false;
-		}
-
-		if (pieces[(int) v.y][(int) v.x] == null) {
 			pieces[(int) v.y][(int) v.x] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
+			currentPiece = pieces[(int) v.y][(int) v.x];
+		} else if (currentPiece.getOwnerId() != currentPlayer.getId()) {
+			return false;
 		} else {
-			pieces[(int) v.y][(int) v.x].increaseDotAmount();
+			currentPiece.increaseDotAmount();
 		}
 
-		if (pieces[(int) v.y][(int) v.x].getDotAmount() > 3) {
+		if (currentPiece.getDotAmount() > 3) {
 			Set<Vector2> frontier = new HashSet<>();
 			frontier.add(v);
 			while (frontier.size() > 0) {
@@ -89,10 +88,14 @@ public class CollapseBoard extends Element implements Board {
 							if (pieces[(int) newPos.y][(int) newPos.x] == null) {
 								pieces[(int) newPos.y][(int) newPos.x] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
 							} else {
+								if (pieces[(int) newPos.y][(int) newPos.x].getOwnerId() != currentPlayer.getId()) {
+									pieces[(int) newPos.y][(int) newPos.x].setOwnerId(currentPlayer.getId());
+									pieces[(int) newPos.y][(int) newPos.x].setColor(currentPlayer.getColor());
+									currentPlayer.addPoints(pieces[(int) newPos.y][(int) newPos.x].getDotAmount());
+								}
 								pieces[(int) newPos.y][(int) newPos.x].increaseDotAmount();
 							}
-							pieces[(int) newPos.y][(int) newPos.x].setOwnerId(currentPlayer.getId());
-							pieces[(int) newPos.y][(int) newPos.x].setColor(currentPlayer.getColor());
+
 							if (pieces[(int) newPos.y][(int) newPos.x].getDotAmount() > 3) {
 								newFrontier.add(newPos);
 							}
