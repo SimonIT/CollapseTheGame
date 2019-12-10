@@ -26,12 +26,6 @@ public class BoardScreen extends AbstractScreen {
 	}
 
 	@Override
-	public void show() {
-		super.show();
-		CollapsePiece.diameter = Gdx.graphics.getWidth(); // TODO better
-	}
-
-	@Override
 	protected void onTouch(int x, int y) {
 		this.board.toBoard(this.touch.x, this.touch.y, this.v);
 		if (this.board.increaseDotAmount(this.v)) {

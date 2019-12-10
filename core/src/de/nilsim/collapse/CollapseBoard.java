@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -129,6 +130,7 @@ public class CollapseBoard extends Element implements Board {
 			widthBoard = 2 * this.borderBoard + this.width * (this.borderFields + fieldSize);
 		}
 		this.pieceSize = this.fieldSize - (2 * this.pieceSpace);
+		CollapsePiece.diameter = MathUtils.roundPositive(this.pieceSize);
 		this.rect.setSize(widthBoard, heightBoard);
 		super.computeGeometry();
 	}

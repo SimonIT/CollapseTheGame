@@ -22,6 +22,7 @@ public class CollapseTheGame extends Game {
 		FileHandleResolver resolver = new InternalFileHandleResolver();
 		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		assets.setLoader(BitmapFont.class, ".TTF", new FreetypeFontLoader(resolver));
+		assets.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 	}
 
 	@Override
