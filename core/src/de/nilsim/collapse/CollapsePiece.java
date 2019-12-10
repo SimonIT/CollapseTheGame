@@ -76,10 +76,6 @@ public class CollapsePiece extends Piece {
 		setDotAmount(this.dotAmount + 1);
 	}
 
-	public boolean hasMaximumDots() {
-		return this.dotAmount == 3;
-	}
-
 	public int getOwnerId() {
 		return this.ownerId;
 	}
