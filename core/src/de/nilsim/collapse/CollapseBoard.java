@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ public class CollapseBoard extends Element implements Board {
 	private Array<Player> players;
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = true;
+	ArrayList<ActionProgress> actionProgresses = new ArrayList<>();
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
 		super();
@@ -82,6 +84,9 @@ public class CollapseBoard extends Element implements Board {
 					for (int i = 0; i < 4; ++i) {
 						int newX = (int) (pos.x + neighbors[i][0]);
 						int newY = (int) (pos.y + neighbors[i][1]);
+
+						actionProgresses.add(new ActionProgress(pieces[(int) pos.y][(int) pos.x] , (int) pos.x, (int) pos.y, newX, newY));
+
 						if (wrapWorld || onGrid(newX, newY)) {
 							newX = (newX + this.width) % this.width;
 							newY = (newY + this.height) % this.height;
@@ -104,6 +109,19 @@ public class CollapseBoard extends Element implements Board {
 					pieces[(int) pos.y][(int) pos.x] = null;
 				}
 				frontier = newFrontier;
+
+				while (true) {
+					System.out.println("!");
+					int done = 0;
+					int total = 0;
+					for (ActionProgress i: actionProgresses) {
+						i.step();
+						++total;
+						if (i.done()) {++done;}
+					}
+					if (done == total) {break;}
+				}
+				actionProgresses = new ArrayList<>();
 			}
 		}
 		currentPlayer.setFirstMove(false);
@@ -164,13 +182,14 @@ public class CollapseBoard extends Element implements Board {
 
 		batch.draw(this.board, getX(), getY(), getWidth(), getHeight());
 
-		for (int i = 0; i < this.pieces.length; i++) {
-			for (int j = 0; j < this.pieces[i].length; j++) {
+		System.out.println("?");
+		for (int i = 0; i < this.height; i++) {
+			for (int j = 0; j < this.width; j++) {
 				float fieldX = getX() + this.borderBoard + (j * (this.borderFields + this.fieldSize));
 				float fieldY = getY() + this.borderBoard + (i * (this.borderFields + this.fieldSize));
 				batch.draw(this.field, fieldX, fieldY, this.fieldSize, this.fieldSize);
 				if (this.pieces[i][j] != null) {
-					if (i == 1 && j == 1) {
+					if (false && i == 1 && j == 1) {	// this is just an example
 						example += 0.5f;
 						batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, example + fieldY + this.pieceSpace, pieceSize, pieceSize);
 						if (example >= fieldSize) example = 0;
@@ -179,6 +198,12 @@ public class CollapseBoard extends Element implements Board {
 					}
 				}
 			}
+		}
+
+		for (ActionProgress i: actionProgresses) {
+			float fieldX = getX() + this.borderBoard + (i.getX() * (this.borderFields + this.fieldSize));
+			float fieldY = getY() + this.borderBoard + (i.getY() * (this.borderFields + this.fieldSize));
+			batch.draw(i.getPiece(), fieldX+ this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
 		}
 	}
 }
