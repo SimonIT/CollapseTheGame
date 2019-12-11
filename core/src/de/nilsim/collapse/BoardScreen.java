@@ -2,7 +2,6 @@ package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.ui.Alignment;
 import ch.asynk.gdx.boardgame.ui.Label;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -28,7 +27,7 @@ public class BoardScreen extends AbstractScreen {
 	@Override
 	protected void onTouch(int x, int y) {
 		this.board.toBoard(this.touch.x, this.touch.y, this.v);
-		if (this.board.increaseDotAmount(this.v)) {
+		if (this.board.increaseDotAmount((int) this.v.x, (int) this.v.y)) {
 			Player player = this.board.getCurrentPlayer();
 			this.playerLabel.get(player).write(String.valueOf(player.getPoints()));
 			this.board.nextPlayer();
