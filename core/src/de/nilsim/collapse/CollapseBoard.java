@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class CollapseBoard extends Element implements Board {
 	private static int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+	float example = 0;
 	private CollapsePiece[][] pieces;
 	private int width, height;
 	private int borderBoard = 10;
@@ -169,7 +170,13 @@ public class CollapseBoard extends Element implements Board {
 				float fieldY = getY() + this.borderBoard + (i * (this.borderFields + this.fieldSize));
 				batch.draw(this.field, fieldX, fieldY, this.fieldSize, this.fieldSize);
 				if (this.pieces[i][j] != null) {
-					batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+					if (i == 1 && j == 1) {
+						example += 0.5f;
+						batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, example + fieldY + this.pieceSpace, pieceSize, pieceSize);
+						if (example >= fieldSize) example = 0;
+					} else {
+						batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+					}
 				}
 			}
 		}
