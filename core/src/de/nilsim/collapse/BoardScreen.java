@@ -31,17 +31,19 @@ public class BoardScreen extends AbstractScreen {
 
 	@Override
 	protected void onTouch(int x, int y) {
-		this.board.toBoard(this.touch.x, this.touch.y, this.v);
-		if (this.board.increaseDotAmount((int) this.v.x, (int) this.v.y)) {
-			Player player = this.board.getCurrentPlayer();
-			Label label = this.playerLabel.get(player);
-			if (!player.getAlive()) {
-				this.root.remove(label);
-				label = this.playerLabel.put(player, new Label(this.deadFont));
-				this.root.add(label);
+		if (this.board.touch(x, y)) {
+			this.board.toBoard(this.touch.x, this.touch.y, this.v);
+			if (this.board.increaseDotAmount((int) this.v.x, (int) this.v.y)) {
+				Player player = this.board.getCurrentPlayer();
+				Label label = this.playerLabel.get(player);
+				if (!player.getAlive()) {
+					this.root.remove(label);
+					label = this.playerLabel.put(player, new Label(this.deadFont));
+					this.root.add(label);
+				}
+				label.write(String.valueOf(player.getPoints()));
+				this.board.nextPlayer();
 			}
-			label.write(String.valueOf(player.getPoints()));
-			this.board.nextPlayer();
 		}
 	}
 

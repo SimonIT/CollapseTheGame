@@ -60,6 +60,7 @@ public class CollapseBoard extends Element implements Board {
 		if (!onGrid(x, y)) {
 			return false;
 		}
+		this.blocked = true;
 		Player currentPlayer = this.players.get(this.currentPlayerIndex);
 		CollapsePiece currentPiece = pieces[y][x];
 
@@ -216,12 +217,14 @@ public class CollapseBoard extends Element implements Board {
 				} else {
 					for (ActionProgressPiece i : a.getPieces()) {
 						this.pieces[i.getP0().y][i.getP0().x] = null; // TODO: is this always correct?
-						float fieldX = getX() + this.borderBoard + ((float) i.getPosition().x * (this.borderFields + this.fieldSize));
-						float fieldY = getY() + this.borderBoard + ((float) i.getPosition().y * (this.borderFields + this.fieldSize));
+						float fieldX = getX() + this.borderBoard + (i.getPosition().x * (this.borderFields + this.fieldSize));
+						float fieldY = getY() + this.borderBoard + (i.getPosition().y * (this.borderFields + this.fieldSize));
 						batch.draw(i.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
 					}
 				}
 			}
+		} else {
+			if (this.blocked) this.blocked = false;
 		}
 	}
 }

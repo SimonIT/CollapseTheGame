@@ -1,7 +1,5 @@
 package de.nilsim.collapse;
 
-import ch.asynk.gdx.boardgame.Piece;
-
 import java.util.ArrayList;
 
 public class ActionProgress {
@@ -16,13 +14,13 @@ public class ActionProgress {
 		this.actionKind = actionKind;
 	}
 
-	public void addPiece(CollapsePiece piece, Point p0, Point p1) {
+	public void addPiece(CollapsePiece piece, Point<Integer> p0, Point<Integer> p1) {
 		this.pieces.add(new ActionProgressPiece(piece, p0, p1));
 	}
 
 	public void step() {
 		this.progress += this.stepSize;
-		for (ActionProgressPiece piece: this.pieces) {
+		for (ActionProgressPiece piece : this.pieces) {
 			piece.step(this.progress);
 		}
 	}
