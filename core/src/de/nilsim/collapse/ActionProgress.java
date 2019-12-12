@@ -6,12 +6,10 @@ public class ActionProgress {
 	private float progress;
 	private float stepSize;
 	private ArrayList<ActionProgressPiece> pieces = new ArrayList<>();
-	private ActionKind actionKind;
 
-	public ActionProgress(ActionKind actionKind) {
+	public ActionProgress() {
 		this.progress = 0f;
 		this.stepSize = 0.01f;
-		this.actionKind = actionKind;
 	}
 
 	public void addPiece(CollapsePiece piece, Point<Integer> p0, Point<Integer> p1) {
@@ -31,9 +29,5 @@ public class ActionProgress {
 
 	public boolean isDone() {
 		return this.progress >= 1f;
-	}
-
-	public ActionKind getActionKind() {
-		return actionKind;
 	}
 }

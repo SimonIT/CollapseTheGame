@@ -91,29 +91,26 @@ public class CollapseBoard extends Element implements Board {
 			frontier.add(new Point<>(x, y));
 			while (frontier.size() > 0) {
 				Set<Point<Integer>> newFrontier = new HashSet<>();
-				ActionProgress actionProgressSplit = new ActionProgress(ActionKind.SPLIT);
-				ActionProgress actionProgressDotIncrease = new ActionProgress(ActionKind.DOT_INCREASE);
+				ActionProgress actionProgress = new ActionProgress();
 
 				for (Point<Integer> pos : frontier) {
 					for (int i = 0; i < 4; ++i) {
 						int newX = pos.x + neighbors[i][0];
 						int newY = pos.y + neighbors[i][1];
 
-						actionProgressSplit.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor()), new Point<>(pos.x, pos.y), new Point<>(newX, newY));
+						actionProgress.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor()), new Point<>(pos.x, pos.y), new Point<>(newX, newY));
 
 						if (wrapWorld || onGrid(newX, newY)) {
 							newX = (newX + this.width) % this.width;
 							newY = (newY + this.height) % this.height;
 							if (piecesCopy[newY][newX] == null) {
 								piecesCopy[newY][newX] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
-								actionProgressDotIncrease.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor(), 0), new Point<>(newX, newY), new Point<>(newX, newY));
 							} else {
 								if (piecesCopy[newY][newX].getOwnerId() != currentPlayer.getId()) {
 									piecesCopy[newY][newX].setOwnerId(currentPlayer.getId());
 									piecesCopy[newY][newX].setColor(currentPlayer.getColor());
 									currentPlayer.addPoints(piecesCopy[newY][newX].getDotAmount());
 								}
-								actionProgressDotIncrease.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor(), piecesCopy[newY][newX].getDotAmount()), new Point<>(newX, newY), new Point<>(newX, newY));
 								piecesCopy[newY][newX].increaseDotAmount();
 							}
 
@@ -124,8 +121,7 @@ public class CollapseBoard extends Element implements Board {
 					}
 					piecesCopy[pos.y][pos.x] = null;
 				}
-				actionProgresses.add(actionProgressSplit);
-				actionProgresses.add(actionProgressDotIncrease);
+				actionProgresses.add(actionProgress);
 				frontier = newFrontier;
 			}
 		}
@@ -201,27 +197,33 @@ public class CollapseBoard extends Element implements Board {
 
 		if (!actionProgresses.isEmpty()) {
 			ActionProgress a = actionProgresses.peek();
-			if (a.getActionKind() == ActionKind.DOT_INCREASE) {
+			for (ActionProgressPiece i : a.getPieces()) {
+				this.pieces[i.getP0().y][i.getP0().x] = null; // TODO: is this always correct?
+				float fieldX = getX() + this.borderBoard + (i.getPosition().x * (this.borderFields + this.fieldSize));
+				float fieldY = getY() + this.borderBoard + (i.getPosition().y * (this.borderFields + this.fieldSize));
+				batch.draw(i.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+			}
+			a.step();
+			if (a.isDone()) {
 				for (ActionProgressPiece i : a.getPieces()) {
-					CollapsePiece p = i.getPiece();
-					if (p.getDotAmount() < 3) {
-						p.increaseDotAmount();    // TODO: animation (just 4 fun)
+					Point<Integer> finalPos = new Point<>(i.getP1().x, i.getP1().y);
+					if (!onGrid(finalPos.x, finalPos.y)) {
+						if (wrapWorld) {
+							finalPos.x = (finalPos.x + this.width) % this.width;
+							finalPos.y = (finalPos.y + this.height) % this.height;
+						} else {
+							continue;
+						}
 					}
-					this.pieces[i.getP1().y][i.getP1().x] = p;
+					if (this.pieces[finalPos.y][finalPos.x] == null) {
+						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
+					} else {
+						int d = this.pieces[finalPos.y][finalPos.x].getDotAmount() + 1;
+						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
+						this.pieces[finalPos.y][finalPos.x].setDotAmount(d);
+					}
 				}
 				actionProgresses.remove();
-			} else {
-				a.step();
-				if (a.isDone()) {
-					actionProgresses.remove();
-				} else {
-					for (ActionProgressPiece i : a.getPieces()) {
-						this.pieces[i.getP0().y][i.getP0().x] = null; // TODO: is this always correct?
-						float fieldX = getX() + this.borderBoard + (i.getPosition().x * (this.borderFields + this.fieldSize));
-						float fieldY = getY() + this.borderBoard + (i.getPosition().y * (this.borderFields + this.fieldSize));
-						batch.draw(i.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
-					}
-				}
 			}
 		} else {
 			if (this.blocked) this.blocked = false;
