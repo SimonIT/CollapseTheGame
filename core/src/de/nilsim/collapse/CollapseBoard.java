@@ -26,7 +26,7 @@ public class CollapseBoard extends Element implements Board {
 	private Texture board, field;
 	private Array<Player> players;
 	private int currentPlayerIndex = 0;
-	private boolean wrapWorld = true;
+	private boolean wrapWorld = false;
 	private Queue<ActionProgress> actionProgresses = new LinkedList<>();
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
@@ -61,14 +61,14 @@ public class CollapseBoard extends Element implements Board {
 			return false;
 		}
 		this.blocked = true;
-		Player currentPlayer = this.players.get(this.currentPlayerIndex);
+		Player currentPlayer = this.getCurrentPlayer();
 		CollapsePiece currentPiece = pieces[y][x];
 
 		if (currentPiece == null) {
 			if (!currentPlayer.getFirstMove()) {
 				return false;
 			}
-			pieces[y][x] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
+			pieces[y][x] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getDefaultPieceTexture());
 			currentPiece = pieces[y][x];
 		} else if (currentPiece.getOwnerId() != currentPlayer.getId()) {
 			return false;
@@ -98,24 +98,27 @@ public class CollapseBoard extends Element implements Board {
 						int newX = pos.x + neighbors[i][0];
 						int newY = pos.y + neighbors[i][1];
 
-						actionProgress.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor()), new Point<>(pos.x, pos.y), new Point<>(newX, newY));
+						actionProgress.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getDefaultPieceTexture()), new Point<>(pos.x, pos.y), new Point<>(newX, newY));
 
 						if (wrapWorld || onGrid(newX, newY)) {
 							newX = (newX + this.width) % this.width;
 							newY = (newY + this.height) % this.height;
 							if (piecesCopy[newY][newX] == null) {
-								piecesCopy[newY][newX] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
+								piecesCopy[newY][newX] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getDefaultPieceTexture());
 							} else {
 								if (piecesCopy[newY][newX].getOwnerId() != currentPlayer.getId()) {
 									piecesCopy[newY][newX].setOwnerId(currentPlayer.getId());
-									piecesCopy[newY][newX].setColor(currentPlayer.getColor());
-									currentPlayer.addPoints(piecesCopy[newY][newX].getDotAmount());
+									int dots = piecesCopy[newY][newX].getDotAmount();
+									piecesCopy[newY][newX].setTexture(currentPlayer.getPieceTexture(dots));
+									currentPlayer.addPoints(dots);
 								}
 								piecesCopy[newY][newX].increaseDotAmount();
 							}
 
 							if (piecesCopy[newY][newX].getDotAmount() > 3) {
 								newFrontier.add(new Point<>(newX, newY));
+							} else {
+								piecesCopy[newY][newX].setTexture(currentPlayer.getPieceTexture(piecesCopy[newY][newX].getDotAmount()));
 							}
 						}
 					}
@@ -124,6 +127,8 @@ public class CollapseBoard extends Element implements Board {
 				actionProgresses.add(actionProgress);
 				frontier = newFrontier;
 			}
+		} else {
+			currentPiece.setTexture(currentPlayer.getPieceTexture(currentPiece.getDotAmount()));
 		}
 
 		currentPlayer.setFirstMove(false);
@@ -143,7 +148,10 @@ public class CollapseBoard extends Element implements Board {
 			widthBoard = 2 * this.borderBoard + this.width * (this.borderFields + fieldSize);
 		}
 		this.pieceSize = this.fieldSize - (2 * this.pieceSpace);
-		CollapsePiece.diameter = MathUtils.roundPositive(this.pieceSize);
+		int diameter = MathUtils.roundPositive(this.pieceSize);
+		for (Player player : this.players) {
+			player.generateTextures(diameter);
+		}
 		this.rect.setSize(widthBoard, heightBoard);
 		super.computeGeometry();
 	}
@@ -175,6 +183,13 @@ public class CollapseBoard extends Element implements Board {
 
 	Player getCurrentPlayer() {
 		return players.get(currentPlayerIndex);
+	}
+
+	Player getPlayerById(int id) {
+		for (Player player : this.players)
+			if (player.getId() == id)
+				return player;
+		throw new IllegalArgumentException(String.valueOf(id));
 	}
 
 	@Override
@@ -221,6 +236,8 @@ public class CollapseBoard extends Element implements Board {
 						int d = this.pieces[finalPos.y][finalPos.x].getDotAmount() + 1;
 						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
 						this.pieces[finalPos.y][finalPos.x].setDotAmount(d);
+						if (d < 4)
+							this.pieces[finalPos.y][finalPos.x].setTexture(getPlayerById(i.getPiece().getOwnerId()).getPieceTexture(d));
 					}
 				}
 				actionProgresses.remove();
