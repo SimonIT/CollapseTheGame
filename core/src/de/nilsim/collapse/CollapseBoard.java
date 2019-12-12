@@ -10,13 +10,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class CollapseBoard extends Element implements Board {
 	private static int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
-	float example = 0;
+	Deque<ArrayList<ActionProgress>> actionProgresses = new LinkedList<>();
 	private CollapsePiece[][] pieces;
 	private int width, height;
 	private int borderBoard = 10;
@@ -27,7 +25,6 @@ public class CollapseBoard extends Element implements Board {
 	private Array<Player> players;
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = true;
-	ArrayList<ActionProgress> actionProgresses = new ArrayList<>();
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
 		super();
@@ -75,17 +72,21 @@ public class CollapseBoard extends Element implements Board {
 			currentPiece.increaseDotAmount();
 		}
 
+		currentPlayer.setFirstMove(false);
+
 		if (currentPiece.getDotAmount() > 3) {
 			Set<Vector2> frontier = new HashSet<>();
 			frontier.add(new Vector2(x, y));
 			while (frontier.size() > 0) {
 				Set<Vector2> newFrontier = new HashSet<>();
+				actionProgresses.add(new ArrayList<>());
+
 				for (Vector2 pos : frontier) {
 					for (int i = 0; i < 4; ++i) {
 						int newX = (int) (pos.x + neighbors[i][0]);
 						int newY = (int) (pos.y + neighbors[i][1]);
 
-						actionProgresses.add(new ActionProgress(pieces[(int) pos.y][(int) pos.x] , (int) pos.x, (int) pos.y, newX, newY));
+						actionProgresses.peekLast().add(new ActionProgress(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor()), (int) pos.x, (int) pos.y, newX, newY));
 
 						if (wrapWorld || onGrid(newX, newY)) {
 							newX = (newX + this.width) % this.width;
@@ -109,23 +110,10 @@ public class CollapseBoard extends Element implements Board {
 					pieces[(int) pos.y][(int) pos.x] = null;
 				}
 				frontier = newFrontier;
-
-				while (true) {
-					System.out.println("!");
-					int done = 0;
-					int total = 0;
-					for (ActionProgress i: actionProgresses) {
-						i.step();
-						++total;
-						if (i.done()) {++done;}
-					}
-					if (done == total) {break;}
-				}
-				actionProgresses = new ArrayList<>();
 			}
 		}
-		currentPlayer.setFirstMove(false);
 		return true;
+
 	}
 
 	@Override
@@ -182,28 +170,34 @@ public class CollapseBoard extends Element implements Board {
 
 		batch.draw(this.board, getX(), getY(), getWidth(), getHeight());
 
-		System.out.println("?");
 		for (int i = 0; i < this.height; i++) {
 			for (int j = 0; j < this.width; j++) {
 				float fieldX = getX() + this.borderBoard + (j * (this.borderFields + this.fieldSize));
 				float fieldY = getY() + this.borderBoard + (i * (this.borderFields + this.fieldSize));
 				batch.draw(this.field, fieldX, fieldY, this.fieldSize, this.fieldSize);
 				if (this.pieces[i][j] != null) {
-					if (false && i == 1 && j == 1) {	// this is just an example
-						example += 0.5f;
-						batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, example + fieldY + this.pieceSpace, pieceSize, pieceSize);
-						if (example >= fieldSize) example = 0;
-					} else {
-						batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
-					}
+					batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
 				}
 			}
 		}
 
-		for (ActionProgress i: actionProgresses) {
-			float fieldX = getX() + this.borderBoard + (i.getX() * (this.borderFields + this.fieldSize));
-			float fieldY = getY() + this.borderBoard + (i.getY() * (this.borderFields + this.fieldSize));
-			batch.draw(i.getPiece(), fieldX+ this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+		if (!actionProgresses.isEmpty()) {
+			ArrayList<ActionProgress> a = actionProgresses.peek();
+			boolean deleteA = false;
+			System.out.println(a.size());
+			for (ActionProgress i : a) {
+				i.step();
+				if (i.done()) {
+					deleteA = true;
+					break;
+				}
+				float fieldX = getX() + this.borderBoard + (i.getX() * (this.borderFields + this.fieldSize));
+				float fieldY = getY() + this.borderBoard + (i.getY() * (this.borderFields + this.fieldSize));
+				batch.draw(i.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+			}
+			if (deleteA) {
+				actionProgresses.remove();
+			}
 		}
 	}
 }

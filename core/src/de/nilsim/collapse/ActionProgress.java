@@ -14,7 +14,7 @@ public class ActionProgress {
 
 	public ActionProgress(CollapsePiece piece, int x0, int y0, int x1, int y1) {
 		this.progress = 0f;
-		this.stepSize = 0.001f;
+		this.stepSize = 0.01f;
 		this.piece = piece;
 		this.x0 = x0;
 		this.y0 = y0;
