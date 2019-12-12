@@ -16,7 +16,7 @@ import java.util.Queue;
 import java.util.Set;
 
 public class CollapseBoard extends Element implements Board {
-	private static int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+	private static final int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 	private CollapsePiece[][] pieces;
 	private int width, height;
 	private int borderBoard = 10;
@@ -87,19 +87,19 @@ public class CollapseBoard extends Element implements Board {
 		}
 
 		if (currentPiece.getDotAmount() > 3) {
-			Set<Vector2> frontier = new HashSet<>();
-			frontier.add(new Vector2(x, y));
+			Set<Point<Integer>> frontier = new HashSet<>();
+			frontier.add(new Point<>(x, y));
 			while (frontier.size() > 0) {
-				Set<Vector2> newFrontier = new HashSet<>();
+				Set<Point<Integer>> newFrontier = new HashSet<>();
 				ActionProgress actionProgressSplit = new ActionProgress(ActionKind.SPLIT);
 				ActionProgress actionProgressDotIncrease = new ActionProgress(ActionKind.DOT_INCREASE);
 
-				for (Vector2 pos : frontier) {
+				for (Point<Integer> pos : frontier) {
 					for (int i = 0; i < 4; ++i) {
-						int newX = (int) (pos.x + neighbors[i][0]);
-						int newY = (int) (pos.y + neighbors[i][1]);
+						int newX = pos.x + neighbors[i][0];
+						int newY = pos.y + neighbors[i][1];
 
-						actionProgressSplit.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor()), new Point((int) pos.x, (int) pos.y), new Point(newX, newY));
+						actionProgressSplit.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor()), new Point<>(pos.x, pos.y), new Point<>(newX, newY));
 
 						if (wrapWorld || onGrid(newX, newY)) {
 							newX = (newX + this.width) % this.width;
@@ -118,11 +118,11 @@ public class CollapseBoard extends Element implements Board {
 							}
 
 							if (piecesCopy[newY][newX].getDotAmount() > 3) {
-								newFrontier.add(new Vector2(newX, newY));
+								newFrontier.add(new Point<>(newX, newY));
 							}
 						}
 					}
-					piecesCopy[(int) pos.y][(int) pos.x] = null;
+					piecesCopy[pos.y][pos.x] = null;
 				}
 				actionProgresses.add(actionProgressSplit);
 				actionProgresses.add(actionProgressDotIncrease);
