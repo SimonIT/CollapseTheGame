@@ -10,11 +10,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
 public class CollapseBoard extends Element implements Board {
 	private static int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
-	Deque<ArrayList<ActionProgress>> actionProgresses = new LinkedList<>();
 	private CollapsePiece[][] pieces;
 	private int width, height;
 	private int borderBoard = 10;
@@ -25,6 +27,7 @@ public class CollapseBoard extends Element implements Board {
 	private Array<Player> players;
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = true;
+	private Queue<ActionProgress> actionProgresses = new LinkedList<>();
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
 		super();
@@ -72,48 +75,62 @@ public class CollapseBoard extends Element implements Board {
 			currentPiece.increaseDotAmount();
 		}
 
-		currentPlayer.setFirstMove(false);
+		// "deep copy" -> TODO: make this better, it's terrible :/
+		CollapsePiece[][] piecesCopy = new CollapsePiece[this.height][this.width];
+		for (int i = 0; i < this.height; ++i) {
+			for (int j = 0; j < this.width; ++j) {
+				if (pieces[i][j] != null) {
+					piecesCopy[i][j] = pieces[i][j].clone();
+				}
+			}
+		}
 
 		if (currentPiece.getDotAmount() > 3) {
 			Set<Vector2> frontier = new HashSet<>();
 			frontier.add(new Vector2(x, y));
 			while (frontier.size() > 0) {
 				Set<Vector2> newFrontier = new HashSet<>();
-				actionProgresses.add(new ArrayList<>());
+				ActionProgress actionProgressSplit = new ActionProgress(ActionKind.SPLIT);
+				ActionProgress actionProgressDotIncrease = new ActionProgress(ActionKind.DOT_INCREASE);
 
 				for (Vector2 pos : frontier) {
 					for (int i = 0; i < 4; ++i) {
 						int newX = (int) (pos.x + neighbors[i][0]);
 						int newY = (int) (pos.y + neighbors[i][1]);
 
-						actionProgresses.peekLast().add(new ActionProgress(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor()), (int) pos.x, (int) pos.y, newX, newY));
+						actionProgressSplit.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor()), new Point((int) pos.x, (int) pos.y), new Point(newX, newY));
 
 						if (wrapWorld || onGrid(newX, newY)) {
 							newX = (newX + this.width) % this.width;
 							newY = (newY + this.height) % this.height;
-							if (pieces[newY][newX] == null) {
-								pieces[newY][newX] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
+							if (piecesCopy[newY][newX] == null) {
+								piecesCopy[newY][newX] = new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor());
+								actionProgressDotIncrease.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor(), 0), new Point<>(newX, newY), new Point<>(newX, newY));
 							} else {
-								if (pieces[newY][newX].getOwnerId() != currentPlayer.getId()) {
-									pieces[newY][newX].setOwnerId(currentPlayer.getId());
-									pieces[newY][newX].setColor(currentPlayer.getColor());
-									currentPlayer.addPoints(pieces[newY][newX].getDotAmount());
+								if (piecesCopy[newY][newX].getOwnerId() != currentPlayer.getId()) {
+									piecesCopy[newY][newX].setOwnerId(currentPlayer.getId());
+									piecesCopy[newY][newX].setColor(currentPlayer.getColor());
+									currentPlayer.addPoints(piecesCopy[newY][newX].getDotAmount());
 								}
-								pieces[newY][newX].increaseDotAmount();
+								actionProgressDotIncrease.addPiece(new CollapsePiece(currentPlayer.getId(), currentPlayer.getColor(), piecesCopy[newY][newX].getDotAmount()), new Point<>(newX, newY), new Point<>(newX, newY));
+								piecesCopy[newY][newX].increaseDotAmount();
 							}
 
-							if (pieces[newY][newX].getDotAmount() > 3) {
+							if (piecesCopy[newY][newX].getDotAmount() > 3) {
 								newFrontier.add(new Vector2(newX, newY));
 							}
 						}
 					}
-					pieces[(int) pos.y][(int) pos.x] = null;
+					piecesCopy[(int) pos.y][(int) pos.x] = null;
 				}
+				actionProgresses.add(actionProgressSplit);
+				actionProgresses.add(actionProgressDotIncrease);
 				frontier = newFrontier;
 			}
 		}
-		return true;
 
+		currentPlayer.setFirstMove(false);
+		return true;
 	}
 
 	@Override
@@ -182,21 +199,28 @@ public class CollapseBoard extends Element implements Board {
 		}
 
 		if (!actionProgresses.isEmpty()) {
-			ArrayList<ActionProgress> a = actionProgresses.peek();
-			boolean deleteA = false;
-			System.out.println(a.size());
-			for (ActionProgress i : a) {
-				i.step();
-				if (i.done()) {
-					deleteA = true;
-					break;
+			ActionProgress a = actionProgresses.peek();
+			if (a.getActionKind() == ActionKind.DOT_INCREASE) {
+				for (ActionProgressPiece i : a.getPieces()) {
+					CollapsePiece p = i.getPiece();
+					if (p.getDotAmount() < 3) {
+						p.increaseDotAmount();    // TODO: animation (just 4 fun)
+					}
+					this.pieces[i.getP1().y][i.getP1().x] = p;
 				}
-				float fieldX = getX() + this.borderBoard + (i.getX() * (this.borderFields + this.fieldSize));
-				float fieldY = getY() + this.borderBoard + (i.getY() * (this.borderFields + this.fieldSize));
-				batch.draw(i.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
-			}
-			if (deleteA) {
 				actionProgresses.remove();
+			} else {
+				a.step();
+				if (a.isDone()) {
+					actionProgresses.remove();
+				} else {
+					for (ActionProgressPiece i : a.getPieces()) {
+						this.pieces[i.getP0().y][i.getP0().x] = null; // TODO: is this always correct?
+						float fieldX = getX() + this.borderBoard + ((float) i.getPosition().x * (this.borderFields + this.fieldSize));
+						float fieldY = getY() + this.borderBoard + ((float) i.getPosition().y * (this.borderFields + this.fieldSize));
+						batch.draw(i.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+					}
+				}
 			}
 		}
 	}

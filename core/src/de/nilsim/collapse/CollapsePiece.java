@@ -30,6 +30,10 @@ public class CollapsePiece extends Piece {
 		updateTexture();
 	}
 
+	public CollapsePiece clone() {
+		return new CollapsePiece(this.ownerId, this.color, this.dotAmount);
+	}
+
 	public void setColor(Color color) {
 		if (!this.color.equals(color)) {
 			this.color = color;

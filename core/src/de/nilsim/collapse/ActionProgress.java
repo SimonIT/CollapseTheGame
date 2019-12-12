@@ -1,44 +1,41 @@
 package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.Piece;
-import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
 
 public class ActionProgress {
 	private float progress;
-	private float  stepSize;
-	private Piece piece;
-	private int x0;
-	private int y0;
-	private int x1;
-	private int y1;
+	private float stepSize;
+	private ArrayList<ActionProgressPiece> pieces = new ArrayList<>();
+	private ActionKind actionKind;
 
-	public ActionProgress(CollapsePiece piece, int x0, int y0, int x1, int y1) {
+	public ActionProgress(ActionKind actionKind) {
 		this.progress = 0f;
 		this.stepSize = 0.01f;
-		this.piece = piece;
-		this.x0 = x0;
-		this.y0 = y0;
-		this.x1 = x1;
-		this.y1 = y1;
+		this.actionKind = actionKind;
+	}
+
+	public void addPiece(CollapsePiece piece, Point p0, Point p1) {
+		this.pieces.add(new ActionProgressPiece(piece, p0, p1));
 	}
 
 	public void step() {
 		this.progress += this.stepSize;
+		for (ActionProgressPiece piece: this.pieces) {
+			piece.step(this.progress);
+		}
 	}
 
-	public float getX() {
-		return this.x0 + (this.x1 - this.x0) * this.progress;
+	public ArrayList<ActionProgressPiece> getPieces() {
+		return this.pieces;
 	}
 
-	public float getY() {
-		return this.y0 + (this.y1 - this.y0) * this.progress;
-	}
-
-	public Piece getPiece() {
-		return this.piece;
-	}
-
-	public boolean done() {
+	public boolean isDone() {
 		return this.progress >= 1f;
+	}
+
+	public ActionKind getActionKind() {
+		return actionKind;
 	}
 }
