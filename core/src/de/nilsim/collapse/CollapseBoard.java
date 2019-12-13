@@ -232,8 +232,8 @@ public class CollapseBoard extends Element implements Board {
 						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
 					} else {
 						int d = this.pieces[finalPos.y][finalPos.x].getDotAmount() + 1;
-						i.getPiece().increaseDotAmount();
-						this.pieces[finalPos.y][finalPos.x] = i.getPiece();	// this is important to change the owner
+						this.pieces[finalPos.y][finalPos.x].setDotAmount(d);
+						this.pieces[finalPos.y][finalPos.x].setOwner(i.getPiece().getOwner());
 						if (d < 4)
 							this.pieces[finalPos.y][finalPos.x].setTexture(getPlayerById(i.getPiece().getOwner().getId()).getPieceTexture(d));
 					}
