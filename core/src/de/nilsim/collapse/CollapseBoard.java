@@ -92,7 +92,6 @@ public class CollapseBoard extends Element implements Board {
 			while (frontier.size() > 0) {
 				Set<Point<Integer>> newFrontier = new HashSet<>();
 				ActionProgress actionProgress = new ActionProgress();
-
 				for (Point<Integer> pos : frontier) {
 					for (int i = 0; i < 4; ++i) {
 						int newX = pos.x + neighbors[i][0];
@@ -130,7 +129,6 @@ public class CollapseBoard extends Element implements Board {
 		} else {
 			currentPiece.setTexture(currentPlayer.getPieceTexture(currentPiece.getDotAmount()));
 		}
-
 		currentPlayer.setFirstMove(false);
 		return true;
 	}
@@ -234,7 +232,6 @@ public class CollapseBoard extends Element implements Board {
 						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
 					} else {
 						int d = this.pieces[finalPos.y][finalPos.x].getDotAmount() + 1;
-						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
 						this.pieces[finalPos.y][finalPos.x].setDotAmount(d);
 						if (d < 4)
 							this.pieces[finalPos.y][finalPos.x].setTexture(getPlayerById(i.getPiece().getOwnerId()).getPieceTexture(d));
