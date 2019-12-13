@@ -4,23 +4,23 @@ import ch.asynk.gdx.boardgame.Piece;
 import com.badlogic.gdx.graphics.Texture;
 
 public class CollapsePiece extends Piece {
-	private int ownerId;
+	private Player owner;
 	private int dotAmount;
 
-	public CollapsePiece(int ownerId, Texture texture) {
+	public CollapsePiece(Player owner, Texture texture) {
 		super(texture);
-		this.ownerId = ownerId;
+		this.owner = owner;
 		this.dotAmount = 1;
 	}
 
-	public CollapsePiece(int ownerId, Texture texture, int dotAmount) {
+	public CollapsePiece(Player owner, Texture texture, int dotAmount) {
 		super(texture);
-		this.ownerId = ownerId;
+		this.owner = owner;
 		this.dotAmount = dotAmount;
 	}
 
 	public CollapsePiece clone() {
-		return new CollapsePiece(this.ownerId, this.getTexture(), this.dotAmount);
+		return new CollapsePiece(this.owner, this.getTexture(), this.dotAmount);
 	}
 
 	public int getDotAmount() {
@@ -38,11 +38,11 @@ public class CollapsePiece extends Piece {
 		setDotAmount(this.dotAmount + 1);
 	}
 
-	public int getOwnerId() {
-		return this.ownerId;
+	public Player getOwner() {
+		return this.owner;
 	}
 
-	public void setOwnerId(int ownerId) {
-		this.ownerId = ownerId;
+	public void setOwner(Player owner) {
+		this.owner = owner;
 	}
 }
