@@ -114,9 +114,26 @@ project(":core") {
 		api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 		api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 		api 'com.github.jeremyz:gdx-boardgame:master-SNAPSHOT'
+	}
+}
 
-		testImplementation 'org.junit.jupiter:junit-jupiter:5.6.0-SNAPSHOT'
-		testImplementation 'org.mockito:mockito-core:3.2.0'
-		testImplementation 'org.mockito:mockito-junit-jupiter:3.2.0'
+project(":tests") {
+	apply plugin: "java-library"
+
+	dependencies {
+		implementation project(":core")
+
+		api "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+		api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+		implementation "junit:junit:4.12"
+		implementation "org.mockito:mockito-all:2.0.2-beta"
+
+		testImplementation 'junit:junit:4.12'
+		testImplementation "org.mockito:mockito-all:2.0.2-beta"
+
+		testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+		testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+		testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 	}
 }

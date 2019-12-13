@@ -41,7 +41,7 @@ public class BoardScreen extends AbstractScreen {
 					label = this.playerLabel.put(player, new Label(this.deadFont));
 					this.root.add(label);
 				}
-				label.write(String.valueOf(player.getPoints()));
+				label.write(player.getName() + " " + player.getPoints());
 				this.board.nextPlayer();
 			}
 		}
