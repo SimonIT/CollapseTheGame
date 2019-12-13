@@ -211,7 +211,7 @@ public class CollapseBoard extends Element implements Board {
 		if (!actionProgresses.isEmpty()) {
 			ActionProgress a = actionProgresses.peek();
 			for (ActionProgressPiece i : a.getPieces()) {
-				this.pieces[i.getP0().y][i.getP0().x] = null; // TODO: is this always correct?
+				this.pieces[i.getP0().y][i.getP0().x] = null;
 				float fieldX = getX() + this.borderBoard + (i.getPosition().x * (this.borderFields + this.fieldSize));
 				float fieldY = getY() + this.borderBoard + (i.getPosition().y * (this.borderFields + this.fieldSize));
 				batch.draw(i.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
@@ -232,7 +232,8 @@ public class CollapseBoard extends Element implements Board {
 						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
 					} else {
 						int d = this.pieces[finalPos.y][finalPos.x].getDotAmount() + 1;
-						this.pieces[finalPos.y][finalPos.x].setDotAmount(d);
+						i.getPiece().increaseDotAmount();
+						this.pieces[finalPos.y][finalPos.x] = i.getPiece();	// this is important to change the owner
 						if (d < 4)
 							this.pieces[finalPos.y][finalPos.x].setTexture(getPlayerById(i.getPiece().getOwner().getId()).getPieceTexture(d));
 					}
@@ -240,7 +241,7 @@ public class CollapseBoard extends Element implements Board {
 				actionProgresses.remove();
 			}
 		} else {
-			if (this.blocked) this.blocked = false;
+			this.blocked = false;
 		}
 	}
 }
