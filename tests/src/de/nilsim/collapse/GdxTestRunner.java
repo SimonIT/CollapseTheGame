@@ -1,4 +1,4 @@
-package de.nilsim.collapse.test;
+package de.nilsim.collapse;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
