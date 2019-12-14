@@ -17,8 +17,8 @@ public class Player {
 		this.id = id;
 		this.color = color;
 		this.name = name;
-		this.alive = true;
-		this.firstMove = true;
+		alive = true;
+		firstMove = true;
 	}
 
 	void generateTextures(int diameter) {
@@ -41,7 +41,7 @@ public class Player {
 					pieceDrawer.fillCircle(diameter / 2, diameter / 3, diameter / 8);
 			}
 
-			this.pieceTextures[i - 1] = new Texture(pieceDrawer);
+			pieceTextures[i - 1] = new Texture(pieceDrawer);
 		}
 	}
 
@@ -53,11 +53,11 @@ public class Player {
 		if (pieceAmount > 3) {
 			return getDefaultPieceTexture();
 		}
-		return this.pieceTextures[pieceAmount - 1];
+		return pieceTextures[pieceAmount - 1];
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public Color getColor() {
@@ -73,11 +73,11 @@ public class Player {
 	}
 
 	public long getPoints() {
-		return this.points;
+		return points;
 	}
 
 	public int getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(int id) {
@@ -85,7 +85,7 @@ public class Player {
 	}
 
 	public boolean getAlive() {
-		return this.alive;
+		return alive;
 	}
 
 	public void setAlive(boolean alive) {
@@ -93,7 +93,7 @@ public class Player {
 	}
 
 	public boolean getFirstMove() {
-		return this.firstMove;
+		return firstMove;
 	}
 
 	public void setFirstMove(boolean firstMove) {

@@ -10,27 +10,27 @@ public class ActionProgressPiece {
 		this.piece = piece;
 		this.p0 = p0;
 		this.p1 = p1;
-		this.pNow = new Point<>((float) p0.x, (float) p0.y);
+		pNow = new Point<>((float) p0.x, (float) p0.y);
 	}
 
 	public Point<Float> getPosition() {
-		return this.pNow;
+		return pNow;
 	}
 
 	public void step(float progress) {
-		this.pNow.x = this.p0.x + (this.p1.x - this.p0.x) * progress;
-		this.pNow.y = this.p0.y + (this.p1.y - this.p0.y) * progress;
+		pNow.x = p0.x + (p1.x - p0.x) * progress;
+		pNow.y = p0.y + (p1.y - p0.y) * progress;
 	}
 
 	public CollapsePiece getPiece() {
-		return this.piece;
+		return piece;
 	}
 
 	public Point<Integer> getP0() {
-		return this.p0;
+		return p0;
 	}
 
 	public Point<Integer> getP1() {
-		return this.p1;
+		return p1;
 	}
 }

@@ -18,41 +18,41 @@ public class PlayerScreen extends MenuScreen {
 	public PlayerScreen(CollapseTheGame app) {
 		super(app, "Player", new String[]{});
 		updatePlayerNames();
-		this.addButton = new Button(app.assets.getFont(AssetNames.font), app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), 30);
-		this.addButton.setAlignment(Alignment.BOTTOM_LEFT);
-		this.addButton.write("Neuer Spieler");
-		this.root.add(this.addButton);
-		this.field = new TextField(app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), app.assets.getFont(AssetNames.font), 30);
-		this.field.setPlaceholder("<Spielername>");
-		this.field.setAlignment(Alignment.BOTTOM_CENTER);
-		this.root.add(field);
-		this.playButton = new Button(app.assets.getFont(AssetNames.font), app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), 30);
-		this.playButton.setAlignment(Alignment.BOTTOM_RIGHT);
-		this.playButton.write("Spielen");
-		this.root.add(this.playButton);
+		addButton = new Button(app.assets.getFont(AssetNames.font), app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), 30);
+		addButton.setAlignment(Alignment.BOTTOM_LEFT);
+		addButton.write("Neuer Spieler");
+		root.add(addButton);
+		field = new TextField(app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), app.assets.getFont(AssetNames.font), 30);
+		field.setPlaceholder("<Spielername>");
+		field.setAlignment(Alignment.BOTTOM_CENTER);
+		root.add(field);
+		playButton = new Button(app.assets.getFont(AssetNames.font), app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), 30);
+		playButton.setAlignment(Alignment.BOTTOM_RIGHT);
+		playButton.write("Spielen");
+		root.add(playButton);
 	}
 
 	private void updatePlayerNames() {
 		Array<String> names = new Array<>();
-		for (Player player : this.players) {
+		for (Player player : players) {
 			names.add(player.getName());
 		}
-		this.menu.setEntries(this.app.assets.getFont(AssetNames.font), names.toArray(String.class));
+		menu.setEntries(app.assets.getFont(AssetNames.font), names.toArray(String.class));
 	}
 
 	@Override
 	protected void onTouch(int x, int y) {
-		if (this.addButton.touch(this.touch.x, this.touch.y)) {
-			this.players.add(new Player(this.playerId, new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random()), this.field.getText()));
-			this.playerId++;
+		if (addButton.touch(touch.x, touch.y)) {
+			players.add(new Player(playerId, new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random()), field.getText()));
+			playerId++;
 			updatePlayerNames();
-			this.field.setText("");
+			field.setText("");
 		}
-		if (this.playButton.touch(this.touch.x, this.touch.y)) {
-			this.app.boardScreen = new BoardScreen(this.app, this.players);
-			this.app.setScreen(this.app.boardScreen);
+		if (playButton.touch(touch.x, touch.y)) {
+			app.boardScreen = new BoardScreen(app, players);
+			app.setScreen(app.boardScreen);
 		}
-		this.field.touch(this.touch.x, this.touch.y);
+		field.touch(touch.x, touch.y);
 	}
 
 	@Override

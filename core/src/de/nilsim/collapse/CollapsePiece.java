@@ -9,7 +9,7 @@ public class CollapsePiece extends Piece {
 	public CollapsePiece(Player owner) {
 		super(owner.getDefaultPieceTexture());
 		this.owner = owner;
-		this.dotAmount = 1;
+		dotAmount = 1;
 	}
 
 	public CollapsePiece(Player owner, int dotAmount) {
@@ -19,11 +19,11 @@ public class CollapsePiece extends Piece {
 	}
 
 	public CollapsePiece clone() {
-		return new CollapsePiece(this.owner, this.dotAmount);
+		return new CollapsePiece(owner, dotAmount);
 	}
 
 	public int getDotAmount() {
-		return this.dotAmount;
+		return dotAmount;
 	}
 
 	public void setDotAmount(int dotAmount) {
@@ -35,11 +35,11 @@ public class CollapsePiece extends Piece {
 	}
 
 	public void increaseDotAmount() {
-		setDotAmount(this.dotAmount + 1);
+		setDotAmount(dotAmount + 1);
 	}
 
 	public Player getOwner() {
-		return this.owner;
+		return owner;
 	}
 
 	public void setOwner(Player owner) {

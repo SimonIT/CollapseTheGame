@@ -36,7 +36,7 @@ public class TextField extends Button implements InputProcessor {
 
 	public void setPlaceholder(String placeholder) {
 		this.placeholder = placeholder;
-		if (this.text.isEmpty()) write(placeholder);
+		if (text.isEmpty()) write(placeholder);
 	}
 
 	public void setMultiline(boolean multiline) {
@@ -44,34 +44,34 @@ public class TextField extends Button implements InputProcessor {
 	}
 
 	void focus() {
-		this.focused = true;
-		this.blinkTask.cancel();
-		Timer.schedule(this.blinkTask, 0.32f, 0.32f);
+		focused = true;
+		blinkTask.cancel();
+		Timer.schedule(blinkTask, 0.32f, 0.32f);
 		Gdx.input.setOnscreenKeyboardVisible(true);
 	}
 
 	void unfocus() {
-		this.focused = false;
-		this.blinkTask.cancel();
-		this.show = false;
-		if (this.text.isEmpty()) write(this.placeholder);
-		else write(this.text);
+		focused = false;
+		blinkTask.cancel();
+		show = false;
+		if (text.isEmpty()) write(placeholder);
+		else write(text);
 		Gdx.input.setOnscreenKeyboardVisible(false);
 	}
 
 	public String getText() {
-		return this.text;
+		return text;
 	}
 
 	public void setText(String text) {
 		this.text = text;
-		this.pos = text.length();
+		pos = text.length();
 	}
 
 	@Override
 	public boolean touch(float x, float y) {
 		if (super.touch(x, y)) {
-			if (!this.focused) {
+			if (!focused) {
 				focus();
 			}
 			return true;
@@ -83,23 +83,23 @@ public class TextField extends Button implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (this.focused) {
+		if (focused) {
 			switch (keycode) {
 				case Input.Keys.RIGHT:
-					if (this.pos < this.text.length()) this.pos++;
+					if (pos < text.length()) pos++;
 					break;
 				case Input.Keys.LEFT:
-					if (this.pos > 0) this.pos--;
+					if (pos > 0) pos--;
 					break;
 				case Input.Keys.DEL:
-					if (this.text.length() > 0) {
-						this.text = this.text.substring(0, this.pos - 1) + this.text.substring(this.pos);
-						this.pos--;
+					if (text.length() > 0) {
+						text = text.substring(0, pos - 1) + text.substring(pos);
+						pos--;
 					}
 					break;
 				case Input.Keys.FORWARD_DEL:
-					if (this.pos < this.text.length()) {
-						this.text = this.text.substring(0, this.pos) + this.text.substring(this.pos + 1);
+					if (pos < text.length()) {
+						text = text.substring(0, pos) + text.substring(pos + 1);
 					}
 					break;
 				case Input.Keys.SPACE:
@@ -109,7 +109,7 @@ public class TextField extends Button implements InputProcessor {
 					type("\t");
 					break;
 				case Input.Keys.ENTER:
-					if (this.multiline) type("\n");
+					if (multiline) type("\n");
 					break;
 			}
 			return true;
@@ -118,8 +118,8 @@ public class TextField extends Button implements InputProcessor {
 	}
 
 	public void type(String in) {
-		this.text = this.text.substring(0, this.pos) + in + this.text.substring(this.pos);
-		this.pos += in.length();
+		text = text.substring(0, pos) + in + text.substring(pos);
+		pos += in.length();
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class TextField extends Button implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		if (this.focused) {
+		if (focused) {
 			if (character != '\b') type(String.valueOf(character));
 			return true;
 		}

@@ -27,28 +27,28 @@ public class CollapseBoard extends Element implements Board {
 	public CollapseBoard(int width, int height, Array<Player> players) {
 		super();
 		this.players = players;
-		this.pieces = new CollapsePiece[height][width];
+		pieces = new CollapsePiece[height][width];
 		this.width = width;
 		this.height = height;
 
 		Pixmap bp = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		bp.setColor(Color.valueOf("c85e2c"));
 		bp.fillRectangle(0, 0, 1, 1);
-		this.board = new Texture(bp);
+		board = new Texture(bp);
 		Pixmap fp = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		fp.setColor(Color.valueOf("fbf297"));
 		fp.fillRectangle(0, 0, 1, 1);
-		this.field = new Texture(fp);
+		field = new Texture(fp);
 	}
 
 	void nextPlayer() {
 		do {
 			currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
-		} while (!this.players.get(currentPlayerIndex).getAlive());
+		} while (!players.get(currentPlayerIndex).getAlive());
 	}
 
 	boolean onGrid(int x, int y) {
-		return x > -1 && x < this.width && y > -1 && y < this.height;
+		return x > -1 && x < width && y > -1 && y < height;
 	}
 
 	boolean onGrid(Point<Integer> position) {
@@ -67,7 +67,7 @@ public class CollapseBoard extends Element implements Board {
 		if (!onGrid(position)) {
 			return false;
 		}
-		Player currentPlayer = this.getCurrentPlayer();
+		Player currentPlayer = getCurrentPlayer();
 		CollapsePiece currentPiece = getPiece(position);
 
 		if (currentPiece == null) {
@@ -90,18 +90,18 @@ public class CollapseBoard extends Element implements Board {
 		float heightBoard = getHeight() == 0 ? parent.getHeight() : getHeight();
 
 		if (widthBoard < heightBoard) {
-			this.fieldSize = (widthBoard - (2f * this.borderBoard) - ((this.width + 1f) * this.borderFields)) / this.width;
-			heightBoard = 2 * this.borderBoard + this.height * (this.borderFields + fieldSize);
+			fieldSize = (widthBoard - (2f * borderBoard) - ((width + 1f) * borderFields)) / width;
+			heightBoard = 2 * borderBoard + height * (borderFields + fieldSize);
 		} else {
-			this.fieldSize = (heightBoard - (2f * this.borderBoard) - ((this.height - 1f) * this.borderFields)) / this.height;
-			widthBoard = 2 * this.borderBoard + this.width * (this.borderFields + fieldSize);
+			fieldSize = (heightBoard - (2f * borderBoard) - ((height - 1f) * borderFields)) / height;
+			widthBoard = 2 * borderBoard + width * (borderFields + fieldSize);
 		}
-		this.pieceSize = this.fieldSize - (2 * this.pieceSpace);
-		int diameter = MathUtils.roundPositive(this.pieceSize);
-		for (Player player : this.players) {
+		pieceSize = fieldSize - (2 * pieceSpace);
+		int diameter = MathUtils.roundPositive(pieceSize);
+		for (Player player : players) {
 			player.generateTextures(diameter);
 		}
-		this.rect.setSize(widthBoard, heightBoard);
+		rect.setSize(widthBoard, heightBoard);
 		super.computeGeometry();
 	}
 
@@ -127,7 +127,7 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	void setPiece(int x, int y, CollapsePiece piece) {
-		this.pieces[y][x] = piece;
+		pieces[y][x] = piece;
 	}
 
 	void setPiece(Point<Integer> position, CollapsePiece piece) {
@@ -139,7 +139,7 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	Player getPlayerById(int id) {
-		for (Player player : this.players)
+		for (Player player : players)
 			if (player.getId() == id)
 				return player;
 		throw new IllegalArgumentException(String.valueOf(id));
@@ -150,13 +150,13 @@ public class CollapseBoard extends Element implements Board {
 		if (!visible) return;
 		if (tainted) computeGeometry();
 
-		batch.draw(this.board, getX(), getY(), getWidth(), getHeight());
+		batch.draw(board, getX(), getY(), getWidth(), getHeight());
 
-		for (int y = 0; y < this.height; y++) {
-			for (int x = 0; x < this.width; x++) {
-				float fieldX = getX() + this.borderBoard + (x * (this.borderFields + this.fieldSize));
-				float fieldY = getY() + this.borderBoard + (y * (this.borderFields + this.fieldSize));
-				batch.draw(this.field, fieldX, fieldY, this.fieldSize, this.fieldSize);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				float fieldX = getX() + borderBoard + (x * (borderFields + fieldSize));
+				float fieldY = getY() + borderBoard + (y * (borderFields + fieldSize));
+				batch.draw(field, fieldX, fieldY, fieldSize, fieldSize);
 
 				Point<Integer> position = new Point<>(x, y);
 				CollapsePiece piece = getPiece(position);
@@ -170,13 +170,13 @@ public class CollapseBoard extends Element implements Board {
 							);
 							if (actionProgress == null) {
 								actionProgress = new ActionProgress();
-								this.blocked = true;
+								blocked = true;
 							}
 							actionProgress.addPiece(new CollapsePiece(player), position, positionNew);
 						}
 						setPiece(position, null);
 					} else {
-						batch.draw(piece, fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+						batch.draw(piece, fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
 					}
 				}
 			}
@@ -185,22 +185,22 @@ public class CollapseBoard extends Element implements Board {
 		if (actionProgress != null) {
 			for (ActionProgressPiece actionProgressPiece : actionProgress.getPieces()) {
 				Point<Float> position = actionProgressPiece.getPosition();
-				float fieldX = getX() + this.borderBoard + (position.x * (this.borderFields + this.fieldSize));
-				float fieldY = getY() + this.borderBoard + (position.y * (this.borderFields + this.fieldSize));
-				batch.draw(actionProgressPiece.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+				float fieldX = getX() + borderBoard + (position.x * (borderFields + fieldSize));
+				float fieldY = getY() + borderBoard + (position.y * (borderFields + fieldSize));
+				batch.draw(actionProgressPiece.getPiece(), fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
 
 				if (wrapWorld) {
 					if (!actionProgressPiece.getP1().equals(new Point<>(
-							(actionProgressPiece.getP1().x + this.width) % this.width,
-							(actionProgressPiece.getP1().y + this.height) % this.height
+							(actionProgressPiece.getP1().x + width) % width,
+							(actionProgressPiece.getP1().y + height) % height
 					))) {
 						position = new Point<>(
-								position.x > this.width - 1 ? position.x - this.width : (position.x + this.width) % this.width,
-								position.y > this.height - 1 ? position.y - this.height : (position.y + this.height) % this.height
+								position.x > width - 1 ? position.x - width : (position.x + width) % width,
+								position.y > height - 1 ? position.y - height : (position.y + height) % height
 						);
-						fieldX = getX() + this.borderBoard + (position.x * (this.borderFields + this.fieldSize));
-						fieldY = getY() + this.borderBoard + (position.y * (this.borderFields + this.fieldSize));
-						batch.draw(actionProgressPiece.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+						fieldX = getX() + borderBoard + (position.x * (borderFields + fieldSize));
+						fieldY = getY() + borderBoard + (position.y * (borderFields + fieldSize));
+						batch.draw(actionProgressPiece.getPiece(), fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
 					}
 				}
 			}
@@ -211,8 +211,8 @@ public class CollapseBoard extends Element implements Board {
 					if (wrapWorld || onGrid(positionNew)) {
 						if (wrapWorld) {
 							positionNew = new Point<>(
-									(positionNew.x + this.width) % this.width,
-									(positionNew.y + this.height) % this.height
+									(positionNew.x + width) % width,
+									(positionNew.y + height) % height
 							);
 						}
 						CollapsePiece pieceNew = getPiece(positionNew);
@@ -225,7 +225,7 @@ public class CollapseBoard extends Element implements Board {
 					}
 				}
 				actionProgress = null;
-				this.blocked = false;
+				blocked = false;
 			}
 		}
 	}

@@ -29,14 +29,14 @@ public abstract class AbstractScreen implements Screen {
 
 	public AbstractScreen(final CollapseTheGame app) {
 		this.app = app;
-		this.batch = new SpriteBatch();
-		this.bg = app.assets.getTexture(AssetNames.bg);
-		this.root = new Root(1);
-		this.root.setPadding(15);
-		this.inputBlocked = false;
-		this.inputDelay = 0f;
-		this.paused = false;
-		this.camera = new OrthographicCamera();
+		batch = new SpriteBatch();
+		bg = app.assets.getTexture(AssetNames.bg);
+		root = new Root(1);
+		root.setPadding(15);
+		inputBlocked = false;
+		inputDelay = 0f;
+		paused = false;
+		camera = new OrthographicCamera();
 	}
 
 	/**

@@ -16,33 +16,33 @@ public class BoardScreen extends AbstractScreen {
 
 	BoardScreen(CollapseTheGame collapseTheGame, Array<Player> players) {
 		super(collapseTheGame);
-		this.deadFont = this.app.assets.get(AssetNames.font);
-		this.deadFont.setColor(Color.RED);
-		this.v = new Vector2();
+		deadFont = app.assets.get(AssetNames.font);
+		deadFont.setColor(Color.RED);
+		v = new Vector2();
 		for (Player player : players) {
 			Label label = new Label(app.assets.getFont(AssetNames.font));
-			this.root.add(label);
-			this.playerLabel.put(player, label);
+			root.add(label);
+			playerLabel.put(player, label);
 		}
-		this.board = new CollapseBoard(5, 7, playerLabel.keys().toArray());
-		this.board.setAlignment(Alignment.MIDDLE_CENTER);
-		this.root.add(this.board);
+		board = new CollapseBoard(5, 7, playerLabel.keys().toArray());
+		board.setAlignment(Alignment.MIDDLE_CENTER);
+		root.add(board);
 	}
 
 	@Override
 	protected void onTouch(int x, int y) {
-		if (this.board.touch(x, y)) {
-			this.board.toBoard(this.touch.x, this.touch.y, this.v);
-			if (this.board.increaseDotAmount((int) this.v.x, (int) this.v.y)) {
-				Player player = this.board.getCurrentPlayer();
-				Label label = this.playerLabel.get(player);
+		if (board.touch(x, y)) {
+			board.toBoard(touch.x, touch.y, v);
+			if (board.increaseDotAmount((int) v.x, (int) v.y)) {
+				Player player = board.getCurrentPlayer();
+				Label label = playerLabel.get(player);
 				if (!player.getAlive()) {
-					this.root.remove(label);
-					label = this.playerLabel.put(player, new Label(this.deadFont));
-					this.root.add(label);
+					root.remove(label);
+					label = playerLabel.put(player, new Label(deadFont));
+					root.add(label);
 				}
 				label.write(String.valueOf(player.getPoints()));
-				this.board.nextPlayer();
+				board.nextPlayer();
 			}
 		}
 	}

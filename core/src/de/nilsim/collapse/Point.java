@@ -16,7 +16,7 @@ public class Point<T> {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Point<?> p = (Point<?>) o;
-		return p.x.equals(this.x) && p.y.equals(this.y);
+		return p.x.equals(x) && p.y.equals(y);
 	}
 
 	@Override

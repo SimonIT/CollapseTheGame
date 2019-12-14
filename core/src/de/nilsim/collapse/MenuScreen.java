@@ -10,20 +10,20 @@ public class MenuScreen extends AbstractScreen {
 
 	MenuScreen(CollapseTheGame collapseTheGame, String title, String[] menuPoints) {
 		super(collapseTheGame);
-		this.menu = new Menu(
+		menu = new Menu(
 				app.assets.getFont(AssetNames.font),
 				app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40),
 				title, menuPoints);
-		this.menu.setAlignment(Alignment.MIDDLE_CENTER);
-		this.menu.setPaddings(5, 5);
-		this.menu.setSpacings(10, 5);
-		this.menu.setPadding(20);
-		this.menu.setLabelsOffset(10);
-		this.root.add(this.menu);
+		menu.setAlignment(Alignment.MIDDLE_CENTER);
+		menu.setPaddings(5, 5);
+		menu.setSpacings(10, 5);
+		menu.setPadding(20);
+		menu.setLabelsOffset(10);
+		root.add(menu);
 	}
 
 	public Menu getMenu() {
-		return this.menu;
+		return menu;
 	}
 
 	public void setClickListener(MenuClickListener clickListener) {
@@ -32,8 +32,8 @@ public class MenuScreen extends AbstractScreen {
 
 	@Override
 	protected void onTouch(int x, int y) {
-		if (this.menu.touch(this.touch.x, this.touch.y) && this.clickListener != null) {
-			this.clickListener.click(this.menu.touched());
+		if (menu.touch(touch.x, touch.y) && clickListener != null) {
+			clickListener.click(menu.touched());
 		}
 	}
 
