@@ -2,15 +2,15 @@ package de.nilsim.collapse;
 
 public class ActionProgressPiece {
 	public CollapsePiece piece;
-	private Point<Integer> p0;
-	private Point<Integer> p1;
+	private Point<Integer> start;
+	private Point<Integer> end;
 	private Point<Float> pNow;
 
-	public ActionProgressPiece(CollapsePiece piece, Point<Integer> p0, Point<Integer> p1) {
+	public ActionProgressPiece(CollapsePiece piece, Point<Integer> start, Point<Integer> end) {
 		this.piece = piece;
-		this.p0 = p0;
-		this.p1 = p1;
-		pNow = new Point<>((float) p0.x, (float) p0.y);
+		this.start = start;
+		this.end = end;
+		pNow = new Point<>((float) start.x, (float) start.y);
 	}
 
 	public Point<Float> getPosition() {
@@ -18,19 +18,19 @@ public class ActionProgressPiece {
 	}
 
 	public void step(float progress) {
-		pNow.x = p0.x + (p1.x - p0.x) * progress;
-		pNow.y = p0.y + (p1.y - p0.y) * progress;
+		pNow.x = start.x + (end.x - start.x) * progress;
+		pNow.y = start.y + (end.y - start.y) * progress;
 	}
 
 	public CollapsePiece getPiece() {
 		return piece;
 	}
 
-	public Point<Integer> getP0() {
-		return p0;
+	public Point<Integer> getStart() {
+		return start;
 	}
 
-	public Point<Integer> getP1() {
-		return p1;
+	public Point<Integer> getEnd() {
+		return end;
 	}
 }

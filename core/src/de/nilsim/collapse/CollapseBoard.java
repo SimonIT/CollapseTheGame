@@ -31,14 +31,15 @@ public class CollapseBoard extends Element implements Board {
 		this.width = width;
 		this.height = height;
 
-		Pixmap bp = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		bp.setColor(Color.valueOf("c85e2c"));
-		bp.fillRectangle(0, 0, 1, 1);
-		board = new Texture(bp);
-		Pixmap fp = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-		fp.setColor(Color.valueOf("fbf297"));
-		fp.fillRectangle(0, 0, 1, 1);
-		field = new Texture(fp);
+		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		pixmap.setColor(Color.valueOf("c85e2c"));
+		pixmap.fillRectangle(0, 0, 1, 1);
+		board = new Texture(pixmap);
+
+		pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		pixmap.setColor(Color.valueOf("fbf297"));
+		pixmap.fillRectangle(0, 0, 1, 1);
+		field = new Texture(pixmap);
 	}
 
 	void nextPlayer() {
@@ -78,7 +79,7 @@ public class CollapseBoard extends Element implements Board {
 		} else if (currentPiece.getOwner() != currentPlayer) {
 			return false;
 		} else {
-			currentPiece.increaseDotAmount();
+			currentPiece.increasePoints();
 		}
 		currentPlayer.setFirstMove(false);
 		return true;
@@ -111,14 +112,14 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	@Override
-	public void centerOf(int x, int y, Vector2 v) {
+	public void centerOf(int x, int y, Vector2 vector) {
 
 	}
 
 	@Override
-	public void toBoard(float x, float y, Vector2 v) {
-		v.x = (x - getX() - borderBoard) / (fieldSize + borderFields);
-		v.y = (y - getY() - borderBoard) / (fieldSize + borderFields);
+	public void toBoard(float x, float y, Vector2 vector) {
+		vector.x = (x - getX() - borderBoard) / (fieldSize + borderFields);
+		vector.y = (y - getY() - borderBoard) / (fieldSize + borderFields);
 	}
 
 	@Override
@@ -162,7 +163,7 @@ public class CollapseBoard extends Element implements Board {
 				CollapsePiece piece = getPiece(position);
 				if (piece != null) {
 					Player player = piece.getOwner();
-					if (piece.getDotAmount() > 3) {
+					if (piece.getPoints() > 3) {
 						for (int side = 0; side < 4; ++side) {
 							Point<Integer> positionNew = new Point<>(
 									position.x + neighbors[side][0],
@@ -190,9 +191,9 @@ public class CollapseBoard extends Element implements Board {
 				batch.draw(actionProgressPiece.getPiece(), fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
 
 				if (wrapWorld) {
-					if (!actionProgressPiece.getP1().equals(new Point<>(
-							(actionProgressPiece.getP1().x + width) % width,
-							(actionProgressPiece.getP1().y + height) % height
+					if (!actionProgressPiece.getEnd().equals(new Point<>(
+							(actionProgressPiece.getEnd().x + width) % width,
+							(actionProgressPiece.getEnd().y + height) % height
 					))) {
 						position = new Point<>(
 								position.x > width - 1 ? position.x - width : (position.x + width) % width,
@@ -207,7 +208,7 @@ public class CollapseBoard extends Element implements Board {
 			actionProgress.step();
 			if (actionProgress.isDone()) {
 				for (ActionProgressPiece actionProgressPiece : actionProgress.getPieces()) {
-					Point<Integer> positionNew = actionProgressPiece.getP1();
+					Point<Integer> positionNew = actionProgressPiece.getEnd();
 					if (wrapWorld || onGrid(positionNew)) {
 						if (wrapWorld) {
 							positionNew = new Point<>(
@@ -219,7 +220,7 @@ public class CollapseBoard extends Element implements Board {
 						if (pieceNew == null) {
 							setPiece(positionNew, actionProgressPiece.getPiece());
 						} else {
-							pieceNew.increaseDotAmount();
+							pieceNew.increasePoints();
 							pieceNew.setOwner(actionProgressPiece.getPiece().getOwner());
 						}
 					}

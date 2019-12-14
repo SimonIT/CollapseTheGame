@@ -11,14 +11,14 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class BoardScreen extends AbstractScreen {
 	private CollapseBoard board;
 	private ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
-	private Vector2 v;
+	private Vector2 vector;
 	private BitmapFont deadFont;
 
 	BoardScreen(CollapseTheGame collapseTheGame, Array<Player> players) {
 		super(collapseTheGame);
 		deadFont = app.assets.get(AssetNames.font);
 		deadFont.setColor(Color.RED);
-		v = new Vector2();
+		vector = new Vector2();
 		for (Player player : players) {
 			Label label = new Label(app.assets.getFont(AssetNames.font));
 			root.add(label);
@@ -32,8 +32,8 @@ public class BoardScreen extends AbstractScreen {
 	@Override
 	protected void onTouch(int x, int y) {
 		if (board.touch(x, y)) {
-			board.toBoard(touch.x, touch.y, v);
-			if (board.increaseDotAmount((int) v.x, (int) v.y)) {
+			board.toBoard(touch.x, touch.y, vector);
+			if (board.increaseDotAmount((int) vector.x, (int) vector.y)) {
 				Player player = board.getCurrentPlayer();
 				Label label = playerLabel.get(player);
 				if (!player.getAlive()) {

@@ -20,7 +20,7 @@ public abstract class AbstractScreen implements Screen {
 
 	protected final CollapseTheGame app;
 	protected final SpriteBatch batch;
-	protected final Texture bg;
+	protected final Texture background;
 	protected final Root root;
 	protected OrthographicCamera camera;
 	protected boolean inputBlocked;
@@ -30,7 +30,7 @@ public abstract class AbstractScreen implements Screen {
 	public AbstractScreen(final CollapseTheGame app) {
 		this.app = app;
 		batch = new SpriteBatch();
-		bg = app.assets.getTexture(AssetNames.bg);
+		background = app.assets.getTexture(AssetNames.background);
 		root = new Root(1);
 		root.setPadding(15);
 		inputBlocked = false;
@@ -57,7 +57,7 @@ public abstract class AbstractScreen implements Screen {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(bg, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		draw(batch);
 		root.draw(batch);
 		batch.end();
@@ -154,7 +154,7 @@ public abstract class AbstractScreen implements Screen {
 				", touch=" + touch +
 				", app=" + app +
 				", batch=" + batch +
-				", bg=" + bg +
+				", bg=" + background +
 				", root=" + root +
 				", camera=" + camera +
 				", inputBlocked=" + inputBlocked +

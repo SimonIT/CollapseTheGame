@@ -22,12 +22,12 @@ public class Player {
 	}
 
 	void generateTextures(int diameter) {
-		for (int i = 1; i < 4; i++) {
+		for (int points = 1; points < 4; points++) {
 			Pixmap pieceDrawer = new Pixmap(diameter, diameter, Pixmap.Format.RGBA8888);
 			pieceDrawer.setColor(color);
 			pieceDrawer.fillCircle(diameter / 2, diameter / 2, diameter / 2);
 			pieceDrawer.setColor(Color.WHITE);
-			switch (i) {
+			switch (points) {
 				case 1:
 					pieceDrawer.fillCircle(diameter / 2, diameter / 2, diameter / 8);
 					break;
@@ -41,7 +41,7 @@ public class Player {
 					pieceDrawer.fillCircle(diameter / 2, diameter / 3, diameter / 8);
 			}
 
-			pieceTextures[i - 1] = new Texture(pieceDrawer);
+			pieceTextures[points - 1] = new Texture(pieceDrawer);
 		}
 	}
 
@@ -49,11 +49,11 @@ public class Player {
 		return getPieceTexture(1);
 	}
 
-	Texture getPieceTexture(int pieceAmount) {
-		if (pieceAmount > 3) {
+	Texture getPieceTexture(int points) {
+		if (points > 3) {
 			return getDefaultPieceTexture();
 		}
-		return pieceTextures[pieceAmount - 1];
+		return pieceTextures[points - 1];
 	}
 
 	public String getName() {
@@ -69,7 +69,7 @@ public class Player {
 	}
 
 	public void addPoints(CollapsePiece piece) {
-		this.points += piece.getDotAmount();
+		this.points += piece.getPoints();
 	}
 
 	public long getPoints() {

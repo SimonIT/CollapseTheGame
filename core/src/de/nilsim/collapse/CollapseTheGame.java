@@ -32,7 +32,7 @@ public class CollapseTheGame extends Game {
 		myBigFont.fontParameters.size = 20;
 		myBigFont.fontParameters.color = Color.BLACK;
 		assets.load(AssetNames.font, BitmapFont.class, myBigFont);
-		assets.load(AssetNames.bg, Texture.class);
+		assets.load(AssetNames.background, Texture.class);
 		assets.load(AssetNames.button, Texture.class);
 		assets.finishLoading();
 		playerScreen = new PlayerScreen(this);

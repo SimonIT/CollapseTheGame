@@ -12,15 +12,15 @@ public class TextField extends Button implements InputProcessor {
 	private boolean focused;
 	private String placeholder;
 	private String text = "";
-	private int pos;
+	private int position;
 	private boolean multiline = false;
 	private boolean show = true;
 	private final Timer.Task blinkTask = new Timer.Task() {
 		public void run() {
 			if (show) {
-				write(text.substring(0, pos) + "|" + text.substring(pos));
+				write(text.substring(0, position) + "|" + text.substring(position));
 			} else {
-				write(text.substring(0, pos) + " " + text.substring(pos));
+				write(text.substring(0, position) + " " + text.substring(position));
 			}
 			show = !show;
 		}
@@ -65,7 +65,7 @@ public class TextField extends Button implements InputProcessor {
 
 	public void setText(String text) {
 		this.text = text;
-		pos = text.length();
+		position = text.length();
 	}
 
 	@Override
@@ -86,20 +86,20 @@ public class TextField extends Button implements InputProcessor {
 		if (focused) {
 			switch (keycode) {
 				case Input.Keys.RIGHT:
-					if (pos < text.length()) pos++;
+					if (position < text.length()) position++;
 					break;
 				case Input.Keys.LEFT:
-					if (pos > 0) pos--;
+					if (position > 0) position--;
 					break;
 				case Input.Keys.DEL:
 					if (text.length() > 0) {
-						text = text.substring(0, pos - 1) + text.substring(pos);
-						pos--;
+						text = text.substring(0, position - 1) + text.substring(position);
+						position--;
 					}
 					break;
 				case Input.Keys.FORWARD_DEL:
-					if (pos < text.length()) {
-						text = text.substring(0, pos) + text.substring(pos + 1);
+					if (position < text.length()) {
+						text = text.substring(0, position) + text.substring(position + 1);
 					}
 					break;
 				case Input.Keys.SPACE:
@@ -117,9 +117,9 @@ public class TextField extends Button implements InputProcessor {
 		return false;
 	}
 
-	public void type(String in) {
-		text = text.substring(0, pos) + in + text.substring(pos);
-		pos += in.length();
+	public void type(String input) {
+		text = text.substring(0, position) + input + text.substring(position);
+		position += input.length();
 	}
 
 	@Override

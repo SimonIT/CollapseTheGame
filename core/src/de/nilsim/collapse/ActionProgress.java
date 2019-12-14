@@ -12,8 +12,8 @@ public class ActionProgress {
 		stepSize = 0.01f;
 	}
 
-	public void addPiece(CollapsePiece piece, Point<Integer> p0, Point<Integer> p1) {
-		pieces.add(new ActionProgressPiece(piece, p0, p1));
+	public void addPiece(CollapsePiece piece, Point<Integer> start, Point<Integer> end) {
+		pieces.add(new ActionProgressPiece(piece, start, end));
 	}
 
 	public void step() {

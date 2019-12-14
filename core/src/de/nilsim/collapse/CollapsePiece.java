@@ -4,38 +4,38 @@ import ch.asynk.gdx.boardgame.Piece;
 
 public class CollapsePiece extends Piece {
 	private Player owner;
-	private int dotAmount;
+	private int points;
 
 	public CollapsePiece(Player owner) {
 		super(owner.getDefaultPieceTexture());
 		this.owner = owner;
-		dotAmount = 1;
+		points = 1;
 	}
 
-	public CollapsePiece(Player owner, int dotAmount) {
-		super(owner.getPieceTexture(dotAmount));
+	public CollapsePiece(Player owner, int points) {
+		super(owner.getPieceTexture(points));
 		this.owner = owner;
-		this.dotAmount = dotAmount;
+		this.points = points;
 	}
 
 	public CollapsePiece clone() {
-		return new CollapsePiece(owner, dotAmount);
+		return new CollapsePiece(owner, points);
 	}
 
-	public int getDotAmount() {
-		return dotAmount;
+	public int getPoints() {
+		return points;
 	}
 
-	public void setDotAmount(int dotAmount) {
-		if (dotAmount < 1) throw new IllegalArgumentException("A piece must have at least 1 dot");
-		if (this.dotAmount != dotAmount) {
-			this.dotAmount = dotAmount;
-			setTexture(owner.getPieceTexture(dotAmount));
+	public void setPoints(int points) {
+		if (points < 1) throw new IllegalArgumentException("A piece must have at least 1 dot");
+		if (this.points != points) {
+			this.points = points;
+			setTexture(owner.getPieceTexture(points));
 		}
 	}
 
-	public void increaseDotAmount() {
-		setDotAmount(dotAmount + 1);
+	public void increasePoints() {
+		setPoints(points + 1);
 	}
 
 	public Player getOwner() {
@@ -45,7 +45,7 @@ public class CollapsePiece extends Piece {
 	public void setOwner(Player owner) {
 		if (this.owner != owner) {
 			this.owner = owner;
-			setTexture(owner.getPieceTexture(dotAmount));
+			setTexture(owner.getPieceTexture(points));
 		}
 	}
 }
