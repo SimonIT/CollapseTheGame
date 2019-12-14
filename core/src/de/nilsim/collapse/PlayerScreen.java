@@ -1,28 +1,34 @@
 package de.nilsim.collapse;
 
+import ch.asynk.gdx.boardgame.ui.Alignment;
 import ch.asynk.gdx.boardgame.ui.Button;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import de.nilsim.collapse.ui.TextField;
 
 public class PlayerScreen extends MenuScreen {
 
-	int playerId = 0;
+	private int playerId = 0;
 	private Button addButton, playButton;
+	private TextField field;
 	private Array<Player> players = new Array<>();
 
 	public PlayerScreen(CollapseTheGame app) {
 		super(app, "Player", new String[]{});
-		this.players.add(new Player(1, Color.valueOf("eb3935"), "Simon"), new Player(2, Color.valueOf("679ed7"), "Nils")); // Todo remove
 		updatePlayerNames();
-		this.addButton = new Button(app.assets.getFont(AssetNames.font), app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40));
-		this.addButton.write("Neuer");
+		this.addButton = new Button(app.assets.getFont(AssetNames.font), app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), 30);
+		this.addButton.setAlignment(Alignment.BOTTOM_LEFT);
+		this.addButton.write("Neuer Spieler");
 		this.root.add(this.addButton);
-		this.playButton = new Button(app.assets.getFont(AssetNames.font), app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40));
+		this.field = new TextField(app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), app.assets.getFont(AssetNames.font), 30);
+		this.field.setPlaceholder("<Spielername>");
+		this.field.setAlignment(Alignment.BOTTOM_CENTER);
+		this.root.add(field);
+		this.playButton = new Button(app.assets.getFont(AssetNames.font), app.assets.getNinePatch(AssetNames.button, 16, 17, 40, 40), 30);
+		this.playButton.setAlignment(Alignment.BOTTOM_RIGHT);
 		this.playButton.write("Spielen");
-		this.playButton.setPosition(500, this.playButton.getY());
 		this.root.add(this.playButton);
 	}
 
@@ -31,30 +37,29 @@ public class PlayerScreen extends MenuScreen {
 		for (Player player : this.players) {
 			names.add(player.getName());
 		}
-		this.menu.setEntries(app.assets.getFont(AssetNames.font), names.toArray(String.class));
+		this.menu.setEntries(this.app.assets.getFont(AssetNames.font), names.toArray(String.class));
 	}
 
 	@Override
 	protected void onTouch(int x, int y) {
 		if (this.addButton.touch(this.touch.x, this.touch.y)) {
-			Gdx.input.getTextInput(new Input.TextInputListener() {
-				@Override
-				public void input(String text) {
-					players.add(new Player(playerId, new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random()), text));
-					playerId++;
-					updatePlayerNames();
-				}
-
-				@Override
-				public void canceled() {
-
-				}
-			}, "Player Name", "", "");
+			this.players.add(new Player(this.playerId, new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random()), this.field.getText()));
+			this.playerId++;
+			updatePlayerNames();
+			this.field.setText("");
 		}
 		if (this.playButton.touch(this.touch.x, this.touch.y)) {
-			app.boardScreen = new BoardScreen(app, this.players);
-			app.setScreen(app.boardScreen);
+			this.app.boardScreen = new BoardScreen(this.app, this.players);
+			this.app.setScreen(this.app.boardScreen);
 		}
+		this.field.touch(this.touch.x, this.touch.y);
+	}
+
+	@Override
+	protected InputMultiplexer getMultiplexer() {
+		InputMultiplexer multiplexer = super.getMultiplexer();
+		multiplexer.addProcessor(field);
+		return multiplexer;
 	}
 
 	@Override

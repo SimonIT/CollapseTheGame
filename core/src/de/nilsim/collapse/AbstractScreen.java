@@ -101,7 +101,7 @@ public abstract class AbstractScreen implements Screen {
 
 	protected abstract void onDragged(int dx, int dy);
 
-	private InputMultiplexer getMultiplexer() {
+	protected InputMultiplexer getMultiplexer() {
 		final InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(new InputAdapter() {
 			@Override
