@@ -172,17 +172,7 @@ public class CollapseBoard extends Element implements Board {
 								actionProgress = new ActionProgress();
 								this.blocked = true;
 							}
-
 							actionProgress.addPiece(new CollapsePiece(player), position, positionNew);
-
-							if (wrapWorld || onGrid(positionNew)) {
-								if (wrapWorld) {
-									positionNew = new Point<>(
-											(positionNew.x + this.width) % this.width,
-											(positionNew.y + this.height) % this.height
-									);
-								}
-							}
 						}
 						setPiece(position, null);
 					} else {
