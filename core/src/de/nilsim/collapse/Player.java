@@ -50,6 +50,9 @@ public class Player {
 	}
 
 	Texture getPieceTexture(int pieceAmount) {
+		if (pieceAmount > 3) {
+			return getDefaultPieceTexture();
+		}
 		return this.pieceTextures[pieceAmount - 1];
 	}
 
@@ -63,6 +66,10 @@ public class Player {
 
 	public void addPoints(long points) {
 		this.points += points;
+	}
+
+	public void addPoints(CollapsePiece piece) {
+		this.points += piece.getDotAmount();
 	}
 
 	public long getPoints() {

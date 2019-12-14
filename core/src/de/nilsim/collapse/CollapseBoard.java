@@ -68,7 +68,7 @@ public class CollapseBoard extends Element implements Board {
 			if (!currentPlayer.getFirstMove()) {
 				return false;
 			}
-			pieces[y][x] = new CollapsePiece(currentPlayer, currentPlayer.getDefaultPieceTexture());
+			pieces[y][x] = new CollapsePiece(currentPlayer);
 			currentPiece = pieces[y][x];
 		} else if (currentPiece.getOwner() != currentPlayer) {
 			return false;
@@ -97,27 +97,23 @@ public class CollapseBoard extends Element implements Board {
 						int newX = pos.x + neighbors[i][0];
 						int newY = pos.y + neighbors[i][1];
 
-						actionProgress.addPiece(new CollapsePiece(currentPlayer, currentPlayer.getDefaultPieceTexture()), new Point<>(pos.x, pos.y), new Point<>(newX, newY));
+						actionProgress.addPiece(new CollapsePiece(currentPlayer), new Point<>(pos.x, pos.y), new Point<>(newX, newY));
 
 						if (wrapWorld || onGrid(newX, newY)) {
 							newX = (newX + this.width) % this.width;
 							newY = (newY + this.height) % this.height;
 							if (piecesCopy[newY][newX] == null) {
-								piecesCopy[newY][newX] = new CollapsePiece(currentPlayer, currentPlayer.getDefaultPieceTexture());
+								piecesCopy[newY][newX] = new CollapsePiece(currentPlayer);
 							} else {
 								if (piecesCopy[newY][newX].getOwner() != currentPlayer) {
 									piecesCopy[newY][newX].setOwner(currentPlayer);
-									int dots = piecesCopy[newY][newX].getDotAmount();
-									piecesCopy[newY][newX].setTexture(currentPlayer.getPieceTexture(dots));
-									currentPlayer.addPoints(dots);
+									currentPlayer.addPoints(piecesCopy[newY][newX]);
 								}
 								piecesCopy[newY][newX].increaseDotAmount();
 							}
 
 							if (piecesCopy[newY][newX].getDotAmount() > 3) {
 								newFrontier.add(new Point<>(newX, newY));
-							} else {
-								piecesCopy[newY][newX].setTexture(currentPlayer.getPieceTexture(piecesCopy[newY][newX].getDotAmount()));
 							}
 						}
 					}
@@ -126,8 +122,6 @@ public class CollapseBoard extends Element implements Board {
 				actionProgresses.add(actionProgress);
 				frontier = newFrontier;
 			}
-		} else {
-			currentPiece.setTexture(currentPlayer.getPieceTexture(currentPiece.getDotAmount()));
 		}
 		currentPlayer.setFirstMove(false);
 		return true;
@@ -231,11 +225,8 @@ public class CollapseBoard extends Element implements Board {
 					if (this.pieces[finalPos.y][finalPos.x] == null) {
 						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
 					} else {
-						int d = this.pieces[finalPos.y][finalPos.x].getDotAmount() + 1;
-						this.pieces[finalPos.y][finalPos.x].setDotAmount(d);
+						this.pieces[finalPos.y][finalPos.x].increaseDotAmount();
 						this.pieces[finalPos.y][finalPos.x].setOwner(i.getPiece().getOwner());
-						if (d < 4)
-							this.pieces[finalPos.y][finalPos.x].setTexture(getPlayerById(i.getPiece().getOwner().getId()).getPieceTexture(d));
 					}
 				}
 				actionProgresses.remove();

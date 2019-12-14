@@ -1,26 +1,25 @@
 package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.Piece;
-import com.badlogic.gdx.graphics.Texture;
 
 public class CollapsePiece extends Piece {
 	private Player owner;
 	private int dotAmount;
 
-	public CollapsePiece(Player owner, Texture texture) {
-		super(texture);
+	public CollapsePiece(Player owner) {
+		super(owner.getDefaultPieceTexture());
 		this.owner = owner;
 		this.dotAmount = 1;
 	}
 
-	public CollapsePiece(Player owner, Texture texture, int dotAmount) {
-		super(texture);
+	public CollapsePiece(Player owner, int dotAmount) {
+		super(owner.getPieceTexture(dotAmount));
 		this.owner = owner;
 		this.dotAmount = dotAmount;
 	}
 
 	public CollapsePiece clone() {
-		return new CollapsePiece(this.owner, this.getTexture(), this.dotAmount);
+		return new CollapsePiece(this.owner, this.dotAmount);
 	}
 
 	public int getDotAmount() {
@@ -31,6 +30,7 @@ public class CollapsePiece extends Piece {
 		if (dotAmount < 1) throw new IllegalArgumentException("A piece must have at least 1 dot");
 		if (this.dotAmount != dotAmount) {
 			this.dotAmount = dotAmount;
+			setTexture(owner.getPieceTexture(dotAmount));
 		}
 	}
 
@@ -43,6 +43,9 @@ public class CollapsePiece extends Piece {
 	}
 
 	public void setOwner(Player owner) {
-		this.owner = owner;
+		if (this.owner != owner) {
+			this.owner = owner;
+			setTexture(owner.getPieceTexture(dotAmount));
+		}
 	}
 }
