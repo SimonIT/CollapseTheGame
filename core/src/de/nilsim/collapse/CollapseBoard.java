@@ -10,11 +10,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-
 public class CollapseBoard extends Element implements Board {
 	private static final int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 	private CollapsePiece[][] pieces;
@@ -27,7 +22,7 @@ public class CollapseBoard extends Element implements Board {
 	private Array<Player> players;
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = false;
-	private Queue<ActionProgress> actionProgresses = new LinkedList<>();
+	ActionProgress actionProgress = null;
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
 		super();
@@ -56,72 +51,34 @@ public class CollapseBoard extends Element implements Board {
 		return x > -1 && x < this.width && y > -1 && y < this.height;
 	}
 
+	boolean onGrid(Point<Integer> position) {
+		return onGrid(position.x, position.y);
+	}
+
+	CollapsePiece getPiece(Point<Integer> position) {
+		return pieces[position.y][position.x];
+	}
+
 	boolean increaseDotAmount(int x, int y) {
-		if (!onGrid(x, y)) {
+		return increaseDotAmount(new Point<>(x, y));
+	}
+
+	boolean increaseDotAmount(Point<Integer> position) {
+		if (!onGrid(position)) {
 			return false;
 		}
-		this.blocked = true;
 		Player currentPlayer = this.getCurrentPlayer();
-		CollapsePiece currentPiece = pieces[y][x];
+		CollapsePiece currentPiece = getPiece(position);
 
 		if (currentPiece == null) {
 			if (!currentPlayer.getFirstMove()) {
 				return false;
 			}
-			pieces[y][x] = new CollapsePiece(currentPlayer);
-			currentPiece = pieces[y][x];
+			setPiece(position, new CollapsePiece(currentPlayer));
 		} else if (currentPiece.getOwner() != currentPlayer) {
 			return false;
 		} else {
 			currentPiece.increaseDotAmount();
-		}
-
-		// "deep copy" -> TODO: make this better, it's terrible :/
-		CollapsePiece[][] piecesCopy = new CollapsePiece[this.height][this.width];
-		for (int i = 0; i < this.height; ++i) {
-			for (int j = 0; j < this.width; ++j) {
-				if (pieces[i][j] != null) {
-					piecesCopy[i][j] = pieces[i][j].clone();
-				}
-			}
-		}
-
-		if (currentPiece.getDotAmount() > 3) {
-			Set<Point<Integer>> frontier = new HashSet<>();
-			frontier.add(new Point<>(x, y));
-			while (frontier.size() > 0) {
-				Set<Point<Integer>> newFrontier = new HashSet<>();
-				ActionProgress actionProgress = new ActionProgress();
-				for (Point<Integer> pos : frontier) {
-					for (int i = 0; i < 4; ++i) {
-						int newX = pos.x + neighbors[i][0];
-						int newY = pos.y + neighbors[i][1];
-
-						actionProgress.addPiece(new CollapsePiece(currentPlayer), new Point<>(pos.x, pos.y), new Point<>(newX, newY));
-
-						if (wrapWorld || onGrid(newX, newY)) {
-							newX = (newX + this.width) % this.width;
-							newY = (newY + this.height) % this.height;
-							if (piecesCopy[newY][newX] == null) {
-								piecesCopy[newY][newX] = new CollapsePiece(currentPlayer);
-							} else {
-								if (piecesCopy[newY][newX].getOwner() != currentPlayer) {
-									piecesCopy[newY][newX].setOwner(currentPlayer);
-									currentPlayer.addPoints(piecesCopy[newY][newX]);
-								}
-								piecesCopy[newY][newX].increaseDotAmount();
-							}
-
-							if (piecesCopy[newY][newX].getDotAmount() > 3) {
-								newFrontier.add(new Point<>(newX, newY));
-							}
-						}
-					}
-					piecesCopy[pos.y][pos.x] = null;
-				}
-				actionProgresses.add(actionProgress);
-				frontier = newFrontier;
-			}
 		}
 		currentPlayer.setFirstMove(false);
 		return true;
@@ -169,8 +126,12 @@ public class CollapseBoard extends Element implements Board {
 		return 0;
 	}
 
-	void addPiece(int x, int y, CollapsePiece piece) {
+	void setPiece(int x, int y, CollapsePiece piece) {
 		this.pieces[y][x] = piece;
+	}
+
+	void setPiece(Point<Integer> position, CollapsePiece piece) {
+		setPiece(position.x, position.y, piece);
 	}
 
 	Player getCurrentPlayer() {
@@ -191,48 +152,75 @@ public class CollapseBoard extends Element implements Board {
 
 		batch.draw(this.board, getX(), getY(), getWidth(), getHeight());
 
-		for (int i = 0; i < this.height; i++) {
-			for (int j = 0; j < this.width; j++) {
-				float fieldX = getX() + this.borderBoard + (j * (this.borderFields + this.fieldSize));
-				float fieldY = getY() + this.borderBoard + (i * (this.borderFields + this.fieldSize));
+		for (int y = 0; y < this.height; y++) {
+			for (int x = 0; x < this.width; x++) {
+				float fieldX = getX() + this.borderBoard + (x * (this.borderFields + this.fieldSize));
+				float fieldY = getY() + this.borderBoard + (y * (this.borderFields + this.fieldSize));
 				batch.draw(this.field, fieldX, fieldY, this.fieldSize, this.fieldSize);
-				if (this.pieces[i][j] != null) {
-					batch.draw(this.pieces[i][j], fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+
+				Point<Integer> position = new Point<>(x, y);
+				CollapsePiece piece = getPiece(position);
+				if (piece != null) {
+					Player player = piece.getOwner();
+					if (piece.getDotAmount() > 3) {
+						for (int side = 0; side < 4; ++side) {
+							Point<Integer> positionNew = new Point<>(
+									position.x + neighbors[side][0],
+									position.y + neighbors[side][1]
+							);
+							if (actionProgress == null) {
+								actionProgress = new ActionProgress();
+								this.blocked = true;
+							}
+
+							actionProgress.addPiece(new CollapsePiece(player), position, positionNew);
+
+							if (wrapWorld || onGrid(positionNew)) {
+								if (wrapWorld) {
+									positionNew = new Point<>(
+											(positionNew.x + this.width) % this.width,
+											(positionNew.y + this.height) % this.height
+									);
+								}
+							}
+						}
+						setPiece(position, null);
+					} else {
+						batch.draw(piece, fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+					}
 				}
 			}
 		}
 
-		if (!actionProgresses.isEmpty()) {
-			ActionProgress a = actionProgresses.peek();
-			for (ActionProgressPiece i : a.getPieces()) {
-				this.pieces[i.getP0().y][i.getP0().x] = null;
-				float fieldX = getX() + this.borderBoard + (i.getPosition().x * (this.borderFields + this.fieldSize));
-				float fieldY = getY() + this.borderBoard + (i.getPosition().y * (this.borderFields + this.fieldSize));
-				batch.draw(i.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+		if (actionProgress != null) {
+			for (ActionProgressPiece actionProgressPiece : actionProgress.getPieces()) {
+				float fieldX = getX() + this.borderBoard + (actionProgressPiece.getPosition().x * (this.borderFields + this.fieldSize));
+				float fieldY = getY() + this.borderBoard + (actionProgressPiece.getPosition().y * (this.borderFields + this.fieldSize));
+				batch.draw(actionProgressPiece.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
 			}
-			a.step();
-			if (a.isDone()) {
-				for (ActionProgressPiece i : a.getPieces()) {
-					Point<Integer> finalPos = new Point<>(i.getP1().x, i.getP1().y);
-					if (!onGrid(finalPos.x, finalPos.y)) {
+			actionProgress.step();
+			if (actionProgress.isDone()) {
+				for (ActionProgressPiece actionProgressPiece : actionProgress.getPieces()) {
+					Point<Integer> positionNew = actionProgressPiece.getP1();
+					if (wrapWorld || onGrid(positionNew)) {
 						if (wrapWorld) {
-							finalPos.x = (finalPos.x + this.width) % this.width;
-							finalPos.y = (finalPos.y + this.height) % this.height;
+							positionNew = new Point<>(
+									(positionNew.x + this.width) % this.width,
+									(positionNew.y + this.height) % this.height
+							);
+						}
+						CollapsePiece pieceNew = getPiece(positionNew);
+						if (pieceNew == null) {
+							setPiece(positionNew, actionProgressPiece.getPiece());
 						} else {
-							continue;
+							pieceNew.increaseDotAmount();
+							pieceNew.setOwner(actionProgressPiece.getPiece().getOwner());
 						}
 					}
-					if (this.pieces[finalPos.y][finalPos.x] == null) {
-						this.pieces[finalPos.y][finalPos.x] = i.getPiece();
-					} else {
-						this.pieces[finalPos.y][finalPos.x].increaseDotAmount();
-						this.pieces[finalPos.y][finalPos.x].setOwner(i.getPiece().getOwner());
-					}
 				}
-				actionProgresses.remove();
+				actionProgress = null;
+				this.blocked = false;
 			}
-		} else {
-			this.blocked = false;
 		}
 	}
 }
