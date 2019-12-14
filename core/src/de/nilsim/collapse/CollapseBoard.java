@@ -184,9 +184,25 @@ public class CollapseBoard extends Element implements Board {
 
 		if (actionProgress != null) {
 			for (ActionProgressPiece actionProgressPiece : actionProgress.getPieces()) {
-				float fieldX = getX() + this.borderBoard + (actionProgressPiece.getPosition().x * (this.borderFields + this.fieldSize));
-				float fieldY = getY() + this.borderBoard + (actionProgressPiece.getPosition().y * (this.borderFields + this.fieldSize));
+				Point<Float> position = actionProgressPiece.getPosition();
+				float fieldX = getX() + this.borderBoard + (position.x * (this.borderFields + this.fieldSize));
+				float fieldY = getY() + this.borderBoard + (position.y * (this.borderFields + this.fieldSize));
 				batch.draw(actionProgressPiece.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+
+				if (wrapWorld) {
+					if (!actionProgressPiece.getP1().equals(new Point<>(
+							(actionProgressPiece.getP1().x + this.width) % this.width,
+							(actionProgressPiece.getP1().y + this.height) % this.height
+					))) {
+						position = new Point<>(
+								position.x > this.width - 1 ? position.x - this.width : (position.x + this.width) % this.width,
+								position.y > this.height - 1 ? position.y - this.height : (position.y + this.height) % this.height
+						);
+						fieldX = getX() + this.borderBoard + (position.x * (this.borderFields + this.fieldSize));
+						fieldY = getY() + this.borderBoard + (position.y * (this.borderFields + this.fieldSize));
+						batch.draw(actionProgressPiece.getPiece(), fieldX + this.pieceSpace, fieldY + this.pieceSpace, pieceSize, pieceSize);
+					}
+				}
 			}
 			actionProgress.step();
 			if (actionProgress.isDone()) {
