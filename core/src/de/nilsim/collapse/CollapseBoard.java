@@ -209,6 +209,7 @@ public class CollapseBoard extends Element implements Board {
 			if (actionProgress.isDone()) {
 				for (ActionProgressPiece actionProgressPiece : actionProgress.getPieces()) {
 					Point<Integer> positionNew = actionProgressPiece.getEnd();
+					CollapsePiece piece = actionProgressPiece.getPiece();
 					if (wrapWorld || onGrid(positionNew)) {
 						if (wrapWorld) {
 							positionNew = new Point<>(
@@ -218,10 +219,12 @@ public class CollapseBoard extends Element implements Board {
 						}
 						CollapsePiece pieceNew = getPiece(positionNew);
 						if (pieceNew == null) {
-							setPiece(positionNew, actionProgressPiece.getPiece());
+							setPiece(positionNew, piece);
 						} else {
+							Player owner = piece.getOwner();
+							owner.addPoints(pieceNew);
 							pieceNew.increasePoints();
-							pieceNew.setOwner(actionProgressPiece.getPiece().getOwner());
+							pieceNew.setOwner(owner);
 						}
 					}
 				}
