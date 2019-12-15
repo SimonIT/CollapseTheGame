@@ -14,6 +14,7 @@ public class PlayerScreen extends MenuScreen {
 	private Button addButton, playButton;
 	private TextField field;
 	private Array<Player> players = new Array<>();
+	private Color[] standardColors = {Color.valueOf("eb3935"), Color.valueOf("679ed7"), Color.valueOf("bbcc00"), Color.valueOf("005c31"), Color.valueOf("c20088"), Color.valueOf("990000"), Color.valueOf("55cc55"), Color.valueOf("003380"), Color.valueOf("993f00"), Color.valueOf("00998f"), Color.valueOf("8F7C00"), Color.valueOf("4C005C"), Color.valueOf("ff5005"), Color.valueOf("ff33ff"), Color.valueOf("ff7799"), Color.valueOf("8888dd")};
 
 	public PlayerScreen(CollapseTheGame app) {
 		super(app, "Player", new String[]{});
@@ -43,7 +44,8 @@ public class PlayerScreen extends MenuScreen {
 	@Override
 	protected void onTouch(int x, int y) {
 		if (addButton.touch(touch.x, touch.y)) {
-			players.add(new Player(playerId, new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1), field.getText()));
+			Color playerColor = playerId < standardColors.length ? standardColors[playerId] : new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1);
+			players.add(new Player(playerId, playerColor, field.getText()));
 			playerId++;
 			updatePlayerNames();
 			field.setText("");

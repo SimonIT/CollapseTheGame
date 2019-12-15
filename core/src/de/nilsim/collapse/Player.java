@@ -12,6 +12,7 @@ public class Player {
 	private boolean alive;
 	private boolean firstMove;
 	private Texture[] pieceTextures = new Texture[3];
+	boolean inverseDotColor = true;
 
 	public Player(int id, Color color, String name) {
 		this.id = id;
@@ -26,7 +27,11 @@ public class Player {
 			Pixmap pieceDrawer = new Pixmap(diameter, diameter, Pixmap.Format.RGBA8888);
 			pieceDrawer.setColor(color);
 			pieceDrawer.fillCircle(diameter / 2, diameter / 2, diameter / 2);
-			pieceDrawer.setColor(Color.WHITE);
+			if (inverseDotColor) {
+				pieceDrawer.setColor(new Color(1 - color.r, 1 - color.g, 1 - color.b, 1));
+			} else {
+				pieceDrawer.setColor(Color.WHITE);
+			}
 			switch (points) {
 				case 1:
 					pieceDrawer.fillCircle(diameter / 2, diameter / 2, diameter / 8);
