@@ -69,7 +69,7 @@ public class Player {
 	}
 
 	public void addPoints(CollapsePiece piece) {
-		this.points += piece.getPoints();
+		points += piece.getPoints();
 	}
 
 	public long getPoints() {
