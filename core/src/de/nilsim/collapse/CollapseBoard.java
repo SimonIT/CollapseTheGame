@@ -185,7 +185,7 @@ public class CollapseBoard extends Element implements Board {
 
 		if (actionProgress != null) {
 			for (ActionProgressPiece actionProgressPiece : actionProgress.getPieces()) {
-				Point<Float> position = actionProgressPiece.getPosition();
+				Point<Float> position = actionProgressPiece.getCurrent();
 				float fieldX = getX() + borderBoard + (position.x * (borderFields + fieldSize));
 				float fieldY = getY() + borderBoard + (position.y * (borderFields + fieldSize));
 				batch.draw(actionProgressPiece.getPiece(), fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
