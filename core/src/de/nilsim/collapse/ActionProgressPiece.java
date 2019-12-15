@@ -1,7 +1,7 @@
 package de.nilsim.collapse;
 
 public class ActionProgressPiece {
-	public CollapsePiece piece;
+	private CollapsePiece piece;
 	private Point<Integer> start;
 	private Point<Integer> end;
 	private Point<Float> current;
