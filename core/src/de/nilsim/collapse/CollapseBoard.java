@@ -222,9 +222,11 @@ public class CollapseBoard extends Element implements Board {
 							setPiece(positionNew, piece);
 						} else {
 							Player owner = piece.getOwner();
-							owner.addPoints(pieceNew);
+							if (owner != pieceNew.getOwner()) {
+								owner.addPoints(pieceNew);
+								pieceNew.setOwner(owner);
+							}
 							pieceNew.increasePoints();
-							pieceNew.setOwner(owner);
 						}
 					}
 				}
