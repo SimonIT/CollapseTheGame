@@ -43,7 +43,7 @@ public class PlayerScreen extends MenuScreen {
 	@Override
 	protected void onTouch(int x, int y) {
 		if (addButton.touch(touch.x, touch.y)) {
-			players.add(new Player(playerId, new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random()), field.getText()));
+			players.add(new Player(playerId, new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1), field.getText()));
 			playerId++;
 			updatePlayerNames();
 			field.setText("");

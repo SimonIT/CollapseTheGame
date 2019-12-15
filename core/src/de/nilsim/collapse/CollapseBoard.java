@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class CollapseBoard extends Element implements Board {
 	private static final int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+	ActionProgress actionProgress = null;
 	private CollapsePiece[][] pieces;
 	private int width, height;
 	private int borderBoard = 10;
@@ -22,7 +23,7 @@ public class CollapseBoard extends Element implements Board {
 	private Array<Player> players;
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = false;
-	ActionProgress actionProgress = null;
+	private PointChangeListener pointChangeListener;
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
 		super();
@@ -40,6 +41,14 @@ public class CollapseBoard extends Element implements Board {
 		pixmap.setColor(Color.valueOf("fbf297"));
 		pixmap.fillRectangle(0, 0, 1, 1);
 		field = new Texture(pixmap);
+	}
+
+	public boolean isWrapWorld() {
+		return wrapWorld;
+	}
+
+	public void setWrapWorld(boolean wrapWorld) {
+		this.wrapWorld = wrapWorld;
 	}
 
 	void nextPlayer() {
@@ -224,6 +233,7 @@ public class CollapseBoard extends Element implements Board {
 							Player owner = piece.getOwner();
 							if (owner != pieceNew.getOwner()) {
 								owner.addPoints(pieceNew);
+								if (pointChangeListener != null) pointChangeListener.pointsChanged(owner);
 								pieceNew.setOwner(owner);
 							}
 							pieceNew.increasePoints();
@@ -234,5 +244,13 @@ public class CollapseBoard extends Element implements Board {
 				blocked = false;
 			}
 		}
+	}
+
+	public void setPointChangeListener(PointChangeListener pointChangeListener) {
+		this.pointChangeListener = pointChangeListener;
+	}
+
+	public interface PointChangeListener {
+		void pointsChanged(Player player);
 	}
 }
