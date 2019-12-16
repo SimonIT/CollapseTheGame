@@ -31,7 +31,7 @@ public class BoardScreen extends AbstractScreen {
 			playerLabel.put(player, label);
 		}
 		root.add(scoreBox);
-		board = new CollapseBoard(5, 7, playerLabel.keys().toArray());
+		board = new CollapseBoard(5, 7, players);
 		board.setAlignment(Alignment.MIDDLE_CENTER);
 		board.setPointChangeListener(player -> {
 			Label label = playerLabel.get(player);
