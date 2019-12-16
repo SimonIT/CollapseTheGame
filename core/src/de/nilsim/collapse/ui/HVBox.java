@@ -39,7 +39,7 @@ public class HVBox extends Assembly {
 	}
 
 	@Override
-	protected void computeGeometry() {
+	public void computeGeometry() {
 		float width = spacing, height = spacing;
 		switch (type) {
 			case HBox:

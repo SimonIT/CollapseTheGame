@@ -18,9 +18,9 @@ public class TextField extends Button implements InputProcessor {
 	private final Timer.Task blinkTask = new Timer.Task() {
 		public void run() {
 			if (show) {
-				write(text.substring(0, position) + "|" + text.substring(position));
+				TextField.super.write(text.substring(0, position) + "|" + text.substring(position));
 			} else {
-				write(text.substring(0, position) + " " + text.substring(position));
+				TextField.super.write(text.substring(0, position) + " " + text.substring(position));
 			}
 			show = !show;
 		}
@@ -36,7 +36,7 @@ public class TextField extends Button implements InputProcessor {
 
 	public void setPlaceholder(String placeholder) {
 		this.placeholder = placeholder;
-		if (text.isEmpty()) write(placeholder);
+		if (text.isEmpty()) super.write(placeholder);
 	}
 
 	public void setMultiline(boolean multiline) {
@@ -54,8 +54,8 @@ public class TextField extends Button implements InputProcessor {
 		focused = false;
 		blinkTask.cancel();
 		show = false;
-		if (text.isEmpty()) write(placeholder);
-		else write(text);
+		if (text.isEmpty()) super.write(placeholder);
+		else super.write(text);
 		Gdx.input.setOnscreenKeyboardVisible(false);
 	}
 
@@ -63,7 +63,8 @@ public class TextField extends Button implements InputProcessor {
 		return text;
 	}
 
-	public void setText(String text) {
+	@Override
+	public void write(String text) {
 		this.text = text;
 		position = text.length();
 	}
@@ -130,7 +131,7 @@ public class TextField extends Button implements InputProcessor {
 	@Override
 	public boolean keyTyped(char character) {
 		if (focused) {
-			if (character != '\b') type(String.valueOf(character));
+			if (character != '\b' && character != '\u007F') type(String.valueOf(character));
 			return true;
 		}
 		return false;

@@ -95,7 +95,7 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	@Override
-	protected void computeGeometry() {
+	public void computeGeometry() {
 		float widthBoard = getWidth() == 0 ? parent.getWidth() : getWidth();
 		float heightBoard = getHeight() == 0 ? parent.getHeight() : getHeight();
 
