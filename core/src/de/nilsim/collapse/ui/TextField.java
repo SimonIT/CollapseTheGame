@@ -109,9 +109,6 @@ public class TextField extends Button implements InputProcessor {
 				case Input.Keys.TAB:
 					type("\t");
 					break;
-				case Input.Keys.ENTER:
-					if (multiline) type("\n");
-					break;
 			}
 			return true;
 		}
@@ -131,7 +128,9 @@ public class TextField extends Button implements InputProcessor {
 	@Override
 	public boolean keyTyped(char character) {
 		if (focused) {
-			if (character != '\b' && character != '\u007F') type(String.valueOf(character));
+			if (character == '\n' && !multiline) return false;
+			if (character == '\b' || character == '\u007F') return false;
+			type(String.valueOf(character));
 			return true;
 		}
 		return false;

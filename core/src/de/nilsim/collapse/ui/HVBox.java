@@ -2,12 +2,10 @@ package de.nilsim.collapse.ui;
 
 import ch.asynk.gdx.boardgame.ui.Assembly;
 import ch.asynk.gdx.boardgame.ui.Element;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class HVBox extends Assembly {
 	private TYPE type = TYPE.HBox;
 	private int spacing = 0;
-	private int beforeHash = 0;
 
 	public HVBox(int c) {
 		super(c);
@@ -45,6 +43,7 @@ public class HVBox extends Assembly {
 			case HBox:
 				for (Element child : children) {
 					child.setPosition(width, 0);
+					child.computeGeometry();
 					width += child.getWidth() + spacing;
 					height = Math.max(height, child.getHeight());
 				}
@@ -52,22 +51,14 @@ public class HVBox extends Assembly {
 			case VBox:
 				for (Element child : children) {
 					child.setPosition(0, height);
+					child.computeGeometry();
 					height += child.getHeight() + spacing;
 					width = Math.max(width, child.getWidth());
 				}
 				break;
 		}
-		beforeHash = children.hashCode();
 		rect.setSize(width, height);
 		super.computeGeometry();
-	}
-
-	@Override
-	public void draw(Batch batch) {
-		if (tainted || children.hashCode() != beforeHash) {
-			computeGeometry();
-		}
-		for (Element element : children) element.draw(batch);
 	}
 
 	public enum TYPE {
