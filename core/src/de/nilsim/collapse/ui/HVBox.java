@@ -9,13 +9,20 @@ public class HVBox extends Assembly {
 
 	public HVBox(int c) {
 		super(c);
+		taintParent = true;
 	}
 
 	public HVBox(Element... elements) {
-		super(elements.length);
+		this(elements.length);
 		for (Element element : elements) {
-			children.add(element);
+			add(element);
 		}
+	}
+
+	@Override
+	public void add(Element e) {
+		e.taintParent = true;
+		super.add(e);
 	}
 
 	public TYPE getType() {
@@ -59,6 +66,9 @@ public class HVBox extends Assembly {
 		}
 		rect.setSize(width, height);
 		super.computeGeometry();
+		for (Element child : children) {
+			child.computeGeometry();
+		}
 	}
 
 	public enum TYPE {

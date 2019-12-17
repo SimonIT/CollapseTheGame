@@ -32,6 +32,7 @@ public class TextField extends Button implements InputProcessor {
 
 	public TextField(NinePatch patch, BitmapFont font, float padding) {
 		super(font, patch, padding);
+		taintParent = true;
 	}
 
 	public void setPlaceholder(String placeholder) {
@@ -67,6 +68,7 @@ public class TextField extends Button implements InputProcessor {
 	public void write(String text) {
 		this.text = text;
 		position = text.length();
+		taint();
 	}
 
 	@Override

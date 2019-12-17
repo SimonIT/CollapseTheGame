@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import de.nilsim.collapse.ui.ColorElement;
 import de.nilsim.collapse.ui.HVBox;
 
 public class BoardScreen extends AbstractScreen {
@@ -27,7 +28,9 @@ public class BoardScreen extends AbstractScreen {
 		for (Player player : players) {
 			Label label = new Label(app.assets.getFont(AssetNames.font));
 			label.write(player.getName() + ": " + player.getPoints());
-			scoreBox.add(label);
+			HVBox colorPlayer = new HVBox(new ColorElement(player.getColor()), label);
+			colorPlayer.setSpacing(10);
+			scoreBox.add(colorPlayer);
 			playerLabel.put(player, label);
 		}
 		root.add(scoreBox);
