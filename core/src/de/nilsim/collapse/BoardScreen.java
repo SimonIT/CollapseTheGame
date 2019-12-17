@@ -8,7 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import de.nilsim.collapse.ui.ColorElement;
-import de.nilsim.collapse.ui.HVBox;
+import de.nilsim.collapse.ui.FlexibleBox;
+import de.nilsim.collapse.ui.HorizontalBox;
+import de.nilsim.collapse.ui.VerticalBox;
 
 public class BoardScreen extends AbstractScreen {
 	private CollapseBoard board;
@@ -21,14 +23,13 @@ public class BoardScreen extends AbstractScreen {
 		deadFont = app.assets.get(AssetNames.font);
 		deadFont.setColor(Color.RED);
 		vector = new Vector2();
-		HVBox scoreBox = new HVBox(players.size);
-		scoreBox.setType(HVBox.TYPE.VBox);
+		FlexibleBox scoreBox = new VerticalBox(players.size);
 		scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
 		scoreBox.setSpacing(20);
 		for (Player player : players) {
 			Label label = new Label(app.assets.getFont(AssetNames.font));
 			label.write(player.getName() + ": " + player.getPoints());
-			HVBox colorPlayer = new HVBox(new ColorElement(player.getColor()), label);
+			FlexibleBox colorPlayer = new HorizontalBox(new ColorElement(player.getColor()), label);
 			colorPlayer.setSpacing(10);
 			scoreBox.add(colorPlayer);
 			playerLabel.put(player, label);
