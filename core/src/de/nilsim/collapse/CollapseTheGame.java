@@ -27,11 +27,18 @@ public class CollapseTheGame extends Game {
 
 	@Override
 	public void create() {
-		FreetypeFontLoader.FreeTypeFontLoaderParameter myBigFont = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-		myBigFont.fontFileName = AssetNames.font;
-		myBigFont.fontParameters.size = 20;
-		myBigFont.fontParameters.color = Color.BLACK;
-		assets.load(AssetNames.font, BitmapFont.class, myBigFont);
+		FreetypeFontLoader.FreeTypeFontLoaderParameter normal = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		normal.fontFileName = "ARLRDBD.TTF";
+		normal.fontParameters.size = 20;
+		normal.fontParameters.color = Color.BLACK;
+		assets.load(AssetNames.font, BitmapFont.class, normal);
+		FreetypeFontLoader.FreeTypeFontLoaderParameter shadow = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		shadow.fontFileName = "ARLRDBD.TTF";
+		shadow.fontParameters.size = 20;
+		shadow.fontParameters.color = Color.BLACK;
+		shadow.fontParameters.borderColor = Color.CYAN;
+		shadow.fontParameters.borderWidth = 2;
+		assets.load(AssetNames.shadowFont, BitmapFont.class, shadow);
 		assets.load(AssetNames.background, Texture.class);
 		assets.load(AssetNames.button, Texture.class);
 		assets.finishLoading();

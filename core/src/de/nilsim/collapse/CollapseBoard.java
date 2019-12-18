@@ -24,6 +24,7 @@ public class CollapseBoard extends Element implements Board {
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = false;
 	private PointChangeListener pointChangeListener;
+	private CurrentPlayerChangeListener currentPlayerChangeListener;
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
 		super();
@@ -52,9 +53,11 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	void nextPlayer() {
+		Player oldCurrentPlayer = getCurrentPlayer();
 		do {
 			currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
 		} while (!players.get(currentPlayerIndex).getAlive());
+		this.currentPlayerChangeListener.playerChanged(oldCurrentPlayer, getCurrentPlayer());
 	}
 
 	boolean onGrid(int x, int y) {
@@ -250,7 +253,15 @@ public class CollapseBoard extends Element implements Board {
 		this.pointChangeListener = pointChangeListener;
 	}
 
+	public void setCurrentPlayerChangeListener(CurrentPlayerChangeListener currentPlayerChangeListener) {
+		this.currentPlayerChangeListener = currentPlayerChangeListener;
+	}
+
 	public interface PointChangeListener {
 		void pointsChanged(Player player);
+	}
+
+	public interface CurrentPlayerChangeListener {
+		void playerChanged(Player oldCurrentPlayer, Player newCurrentPlayer);
 	}
 }

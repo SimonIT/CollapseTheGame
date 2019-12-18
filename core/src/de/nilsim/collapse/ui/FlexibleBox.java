@@ -2,6 +2,8 @@ package de.nilsim.collapse.ui;
 
 import ch.asynk.gdx.boardgame.ui.Assembly;
 import ch.asynk.gdx.boardgame.ui.Element;
+import ch.asynk.gdx.boardgame.utils.Collection;
+import ch.asynk.gdx.boardgame.utils.IterableSet;
 
 public abstract class FlexibleBox extends Assembly {
 	protected int spacing = 0;
@@ -15,6 +17,17 @@ public abstract class FlexibleBox extends Assembly {
 		for (Element element : elements) {
 			add(element);
 		}
+	}
+
+	public FlexibleBox(Collection<Element> elements) {
+		this(elements.size());
+		for (Element element : elements) {
+			add(element);
+		}
+	}
+
+	public IterableSet<Element> getChildren() {
+		return children;
 	}
 
 	@Override

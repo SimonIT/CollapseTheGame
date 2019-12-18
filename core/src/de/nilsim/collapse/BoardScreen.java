@@ -15,19 +15,22 @@ import de.nilsim.collapse.ui.VerticalBox;
 public class BoardScreen extends AbstractScreen {
 	private CollapseBoard board;
 	private ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
-	private Vector2 vector;
+	private Vector2 vector = new Vector2();
+	private BitmapFont normalFont;
 	private BitmapFont deadFont;
+	private BitmapFont shadowFont;
 
 	BoardScreen(CollapseTheGame collapseTheGame, Array<Player> players) {
 		super(collapseTheGame);
+		normalFont = app.assets.getFont(AssetNames.font);
 		deadFont = app.assets.get(AssetNames.font);
 		deadFont.setColor(Color.RED);
-		vector = new Vector2();
+		shadowFont = app.assets.get(AssetNames.shadowFont);
 		FlexibleBox scoreBox = new VerticalBox(players.size);
 		scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
 		scoreBox.setSpacing(20);
 		for (Player player : players) {
-			Label label = new Label(app.assets.getFont(AssetNames.font));
+			Label label = new Label(normalFont);
 			label.write(player.getName() + ": " + player.getPoints());
 			FlexibleBox colorPlayer = new HorizontalBox(new ColorElement(player.getColor()), label);
 			colorPlayer.setSpacing(10);
@@ -36,15 +39,18 @@ public class BoardScreen extends AbstractScreen {
 		}
 		root.add(scoreBox);
 		board = new CollapseBoard(5, 7, players);
+		playerLabel.get(board.getCurrentPlayer()).setFont(shadowFont);
 		board.setAlignment(Alignment.MIDDLE_CENTER);
 		board.setPointChangeListener(player -> {
 			Label label = playerLabel.get(player);
 			if (!player.getAlive()) {
-				root.remove(label);
-				label = playerLabel.put(player, new Label(deadFont));
-				root.add(label);
+				label.setFont(deadFont);
 			}
 			label.write(player.getName() + ": " + player.getPoints());
+		});
+		board.setCurrentPlayerChangeListener((oldCurrentPlayer, newCurrentPlayer) -> {
+			playerLabel.get(oldCurrentPlayer).setFont(normalFont);
+			playerLabel.get(newCurrentPlayer).setFont(shadowFont);
 		});
 		root.add(board);
 	}
