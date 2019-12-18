@@ -21,17 +21,21 @@ public class CollapseBoard extends Element implements Board {
 	private float fieldSize, pieceSize;
 	private Texture board, field;
 	private Array<Player> players;
+	private int[] playersPieceCount;
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = false;
 	private PointChangeListener pointChangeListener;
 	private CurrentPlayerChangeListener currentPlayerChangeListener;
+	private boolean wasJustInAction;
 
 	public CollapseBoard(int width, int height, Array<Player> players) {
 		super();
 		this.players = players;
+		playersPieceCount = new int[players.size];
 		pieces = new CollapsePiece[height][width];
 		this.width = width;
 		this.height = height;
+		wasJustInAction = false;
 
 		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		pixmap.setColor(Color.valueOf("c85e2c"));
@@ -87,6 +91,7 @@ public class CollapseBoard extends Element implements Board {
 			if (!currentPlayer.getFirstMove()) {
 				return false;
 			}
+			playersPieceCount[currentPlayerIndex]++;
 			setPiece(position, new CollapsePiece(currentPlayer));
 		} else if (currentPiece.getOwner() != currentPlayer) {
 			return false;
@@ -94,6 +99,7 @@ public class CollapseBoard extends Element implements Board {
 			currentPiece.increasePoints();
 		}
 		currentPlayer.setFirstMove(false);
+		wasJustInAction = true;
 		return true;
 	}
 
@@ -176,6 +182,7 @@ public class CollapseBoard extends Element implements Board {
 				if (piece != null) {
 					Player player = piece.getOwner();
 					if (piece.getPoints() > 3) {
+						wasJustInAction = true;
 						for (int side = 0; side < 4; ++side) {
 							Point<Integer> positionNew = new Point<>(
 									position.x + neighbors[side][0],
@@ -187,6 +194,7 @@ public class CollapseBoard extends Element implements Board {
 							}
 							actionProgress.addPiece(new CollapsePiece(player), position, positionNew);
 						}
+						playersPieceCount[piece.getOwner().getId()]--;
 						setPiece(position, null);
 					} else {
 						batch.draw(piece, fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
@@ -231,10 +239,16 @@ public class CollapseBoard extends Element implements Board {
 						}
 						CollapsePiece pieceNew = getPiece(positionNew);
 						if (pieceNew == null) {
+							playersPieceCount[piece.getOwner().getId()]++;
 							setPiece(positionNew, piece);
 						} else {
+							Player originalOwner = pieceNew.getOwner();
 							Player owner = piece.getOwner();
-							if (owner != pieceNew.getOwner()) {
+							if (owner != originalOwner) {
+								playersPieceCount[owner.getId()]++;
+								if (--playersPieceCount[originalOwner.getId()] == 0) {
+									originalOwner.setAlive(false);
+								}
 								owner.addPoints(pieceNew);
 								if (pointChangeListener != null) pointChangeListener.pointsChanged(owner);
 								pieceNew.setOwner(owner);
@@ -246,6 +260,10 @@ public class CollapseBoard extends Element implements Board {
 				actionProgress = null;
 				blocked = false;
 			}
+			wasJustInAction = true;
+		} else if (wasJustInAction) {
+			nextPlayer();
+			wasJustInAction = false;
 		}
 	}
 

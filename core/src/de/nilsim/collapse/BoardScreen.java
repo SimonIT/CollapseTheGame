@@ -59,9 +59,7 @@ public class BoardScreen extends AbstractScreen {
 	protected void onTouch(int x, int y) {
 		if (board.touch(x, y)) {
 			board.toBoard(touch.x, touch.y, vector);
-			if (board.increaseDotAmount((int) vector.x, (int) vector.y)) {
-				board.nextPlayer();
-			}
+			board.increaseDotAmount((int) vector.x, (int) vector.y);
 		}
 	}
 
