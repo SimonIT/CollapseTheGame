@@ -39,6 +39,11 @@ public class CollapseTheGame extends Game {
 		shadow.fontParameters.borderColor = Color.CYAN;
 		shadow.fontParameters.borderWidth = 2;
 		assets.load(AssetNames.shadowFont, BitmapFont.class, shadow);
+		FreetypeFontLoader.FreeTypeFontLoaderParameter red = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		red.fontFileName = "ARLRDBD.TTF";
+		red.fontParameters.size = 20;
+		red.fontParameters.color = Color.RED;
+		assets.load(AssetNames.redFont, BitmapFont.class, red);
 		assets.load(AssetNames.background, Texture.class);
 		assets.load(AssetNames.button, Texture.class);
 		assets.finishLoading();

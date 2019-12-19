@@ -23,8 +23,7 @@ public class BoardScreen extends AbstractScreen {
 	BoardScreen(CollapseTheGame collapseTheGame, Array<Player> players) {
 		super(collapseTheGame);
 		normalFont = app.assets.getFont(AssetNames.font);
-		deadFont = app.assets.get(AssetNames.font);
-		deadFont.setColor(Color.RED);
+		deadFont = app.assets.get(AssetNames.redFont);
 		shadowFont = app.assets.get(AssetNames.shadowFont);
 		FlexibleBox scoreBox = new VerticalBox(players.size);
 		scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
@@ -43,14 +42,16 @@ public class BoardScreen extends AbstractScreen {
 		board.setAlignment(Alignment.MIDDLE_CENTER);
 		board.setPointChangeListener(player -> {
 			Label label = playerLabel.get(player);
-			if (!player.getAlive()) {
-				label.setFont(deadFont);
-			}
 			label.write(player.getName() + ": " + player.getPoints());
 		});
 		board.setCurrentPlayerChangeListener((oldCurrentPlayer, newCurrentPlayer) -> {
 			playerLabel.get(oldCurrentPlayer).setFont(normalFont);
 			playerLabel.get(newCurrentPlayer).setFont(shadowFont);
+			for (Player player : players) {
+				if (!player.getAlive()) {
+					playerLabel.get(player).setFont(deadFont);
+				}
+			}
 		});
 		root.add(board);
 	}
