@@ -42,11 +42,13 @@ public class CollapseBoard extends Element implements Board {
 		pixmap.setColor(Color.valueOf("c85e2c"));
 		pixmap.fillRectangle(0, 0, 1, 1);
 		board = new Texture(pixmap);
+		pixmap.dispose();
 
 		pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		pixmap.setColor(Color.valueOf("fbf297"));
 		pixmap.fillRectangle(0, 0, 1, 1);
 		field = new Texture(pixmap);
+		pixmap.dispose();
 	}
 
 	public boolean isWrapWorld() {

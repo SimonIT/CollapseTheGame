@@ -47,6 +47,7 @@ public class Player {
 			}
 
 			pieceTextures[points - 1] = new Texture(pieceDrawer);
+			pieceDrawer.dispose();
 		}
 	}
 

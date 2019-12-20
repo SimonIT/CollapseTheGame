@@ -32,6 +32,7 @@ public class ColorElement extends Element {
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, pixmap.getWidth(), pixmap.getHeight());
 		colorTexture = new Texture(pixmap);
+		pixmap.dispose();
 	}
 
 	@Override
