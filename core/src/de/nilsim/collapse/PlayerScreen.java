@@ -5,15 +5,17 @@ import ch.asynk.gdx.boardgame.ui.Button;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
 import de.nilsim.collapse.ui.TextField;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerScreen extends MenuScreen {
 
 	private int playerId = 0;
 	private Button addButton, playButton;
 	private TextField field;
-	private Array<Player> players = new Array<>();
+	private List<Player> players = new ArrayList<>();
 	private Color[] standardColors = {Color.valueOf("eb3935"), Color.valueOf("679ed7"), Color.valueOf("bbcc00"), Color.valueOf("005c31"), Color.valueOf("c20088"), Color.valueOf("990000"), Color.valueOf("55cc55"), Color.valueOf("003380"), Color.valueOf("993f00"), Color.valueOf("00998f"), Color.valueOf("8F7C00"), Color.valueOf("4C005C"), Color.valueOf("ff5005"), Color.valueOf("ff33ff"), Color.valueOf("ff7799"), Color.valueOf("8888dd")};
 
 	public PlayerScreen(CollapseTheGame app) {
@@ -34,11 +36,11 @@ public class PlayerScreen extends MenuScreen {
 	}
 
 	private void updatePlayerNames() {
-		Array<String> names = new Array<>();
+		List<String> names = new ArrayList<>();
 		for (Player player : players) {
 			names.add(player.getName());
 		}
-		menu.setEntries(app.assets.getFont(AssetNames.font), names.toArray(String.class));
+		menu.setEntries(app.assets.getFont(AssetNames.font), names.toArray(new String[0]));
 	}
 
 	@Override

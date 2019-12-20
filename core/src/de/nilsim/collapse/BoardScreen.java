@@ -2,15 +2,15 @@ package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.ui.Alignment;
 import ch.asynk.gdx.boardgame.ui.Label;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import de.nilsim.collapse.ui.ColorElement;
 import de.nilsim.collapse.ui.FlexibleBox;
 import de.nilsim.collapse.ui.HorizontalBox;
 import de.nilsim.collapse.ui.VerticalBox;
+
+import java.util.List;
 
 public class BoardScreen extends AbstractScreen {
 	private CollapseBoard board;
@@ -20,12 +20,12 @@ public class BoardScreen extends AbstractScreen {
 	private BitmapFont deadFont;
 	private BitmapFont shadowFont;
 
-	BoardScreen(CollapseTheGame collapseTheGame, Array<Player> players) {
+	BoardScreen(CollapseTheGame collapseTheGame, List<Player> players) {
 		super(collapseTheGame);
 		normalFont = app.assets.getFont(AssetNames.font);
 		deadFont = app.assets.get(AssetNames.redFont);
 		shadowFont = app.assets.get(AssetNames.shadowFont);
-		FlexibleBox scoreBox = new VerticalBox(players.size);
+		FlexibleBox scoreBox = new VerticalBox(players.size());
 		scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
 		scoreBox.setSpacing(20);
 		for (Player player : players) {

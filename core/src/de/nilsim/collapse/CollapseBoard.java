@@ -8,7 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+
+import java.util.List;
 
 public class CollapseBoard extends Element implements Board {
 	private static final int[][] neighbors = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
@@ -20,7 +21,7 @@ public class CollapseBoard extends Element implements Board {
 	private int pieceSpace = 3;
 	private float fieldSize, pieceSize;
 	private Texture board, field;
-	private Array<Player> players;
+	private List<Player> players;
 	private int[] playersPieceCount;
 	private int currentPlayerIndex = 0;
 	private boolean wrapWorld = false;
@@ -28,10 +29,10 @@ public class CollapseBoard extends Element implements Board {
 	private CurrentPlayerChangeListener currentPlayerChangeListener;
 	private boolean wasJustInAction;
 
-	public CollapseBoard(int width, int height, Array<Player> players) {
+	public CollapseBoard(int width, int height, List<Player> players) {
 		super();
 		this.players = players;
-		playersPieceCount = new int[players.size];
+		playersPieceCount = new int[players.size()];
 		pieces = new CollapsePiece[height][width];
 		this.width = width;
 		this.height = height;
@@ -59,7 +60,7 @@ public class CollapseBoard extends Element implements Board {
 	void nextPlayer() {
 		Player oldCurrentPlayer = getCurrentPlayer();
 		do {
-			currentPlayerIndex = (currentPlayerIndex + 1) % players.size;
+			currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 		} while (!players.get(currentPlayerIndex).getAlive());
 		this.currentPlayerChangeListener.playerChanged(oldCurrentPlayer, getCurrentPlayer());
 	}
