@@ -79,6 +79,10 @@ public class CollapseBoard extends Element implements Board {
 		return pieces[position.y][position.x];
 	}
 
+	float getAspectRatio() {
+		return 1f * width / height;
+	}
+
 	boolean increaseDotAmount(int x, int y) {
 		return increaseDotAmount(new Point<>(x, y));
 	}
@@ -107,11 +111,12 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	@Override
-	public void computeGeometry() {
+	public void computeDimensions() {
+		super.computeDimensions();
 		float widthBoard = getWidth() == 0 ? parent.getWidth() : getWidth();
 		float heightBoard = getHeight() == 0 ? parent.getHeight() : getHeight();
 
-		if (widthBoard < heightBoard) {
+		if (this.sizing.fillWidth()) {
 			fieldSize = (widthBoard - (2f * borderBoard) - ((width + 1f) * borderFields)) / width;
 			heightBoard = 2 * borderBoard + height * (borderFields + fieldSize);
 		} else {
@@ -124,7 +129,6 @@ public class CollapseBoard extends Element implements Board {
 			player.generateTextures(diameter);
 		}
 		rect.setSize(widthBoard, heightBoard);
-		super.computeGeometry();
 	}
 
 	@Override

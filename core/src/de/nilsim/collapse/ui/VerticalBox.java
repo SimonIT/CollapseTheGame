@@ -12,18 +12,17 @@ public class VerticalBox extends FlexibleBox {
 	}
 
 	@Override
-	public void computeGeometry() {
+	public void computeDimensions() {
 		float width = spacing, height = spacing;
 		for (Element child : children) {
 			child.setPosition(0, height);
-			child.computeGeometry();
+			child.computeDimensions();
 			height += child.getHeight() + spacing;
 			width = Math.max(width, child.getWidth());
 		}
+		width += spacing;
+		height += spacing;
 		rect.setSize(width, height);
-		super.computeGeometry();
-		for (Element child : children) {
-			child.computeGeometry();
-		}
+		super.computeDimensions();
 	}
 }

@@ -12,18 +12,17 @@ public class HorizontalBox extends FlexibleBox {
 	}
 
 	@Override
-	public void computeGeometry() {
+	public void computeDimensions() {
 		float width = spacing, height = spacing;
 		for (Element child : children) {
 			child.setPosition(width, 0);
-			child.computeGeometry();
+			child.computeDimensions();
 			width += child.getWidth() + spacing;
 			height = Math.max(height, child.getHeight());
 		}
+		width += spacing;
+		height += spacing;
 		rect.setSize(width, height);
-		super.computeGeometry();
-		for (Element child : children) {
-			child.computeGeometry();
-		}
+		super.computeDimensions();
 	}
 }

@@ -1,6 +1,7 @@
 package de.nilsim.collapse.ui;
 
 import ch.asynk.gdx.boardgame.ui.Button;
+import ch.asynk.gdx.boardgame.ui.Element;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -72,15 +73,15 @@ public class TextField extends Button implements InputProcessor {
 	}
 
 	@Override
-	public boolean touch(float x, float y) {
-		if (super.touch(x, y)) {
+	public Element touch(float x, float y) {
+		if (super.touch(x, y) == this) {
 			if (!focused) {
 				focus();
 			}
-			return true;
+			return this;
 		} else {
 			unfocus();
-			return false;
+			return super.touch(x, y);
 		}
 	}
 

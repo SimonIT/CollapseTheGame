@@ -2,6 +2,8 @@ package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.ui.Alignment;
 import ch.asynk.gdx.boardgame.ui.Label;
+import ch.asynk.gdx.boardgame.ui.Sizing;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -38,6 +40,7 @@ public class BoardScreen extends AbstractScreen {
 		}
 		root.add(scoreBox);
 		board = new CollapseBoard(5, 7, players);
+		computeBoardSizing(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		playerLabel.get(board.getCurrentPlayer()).setFont(shadowFont);
 		board.setAlignment(Alignment.MIDDLE_CENTER);
 		board.setPointChangeListener(player -> {
@@ -57,8 +60,18 @@ public class BoardScreen extends AbstractScreen {
 	}
 
 	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		computeBoardSizing(width, height);
+	}
+
+	private void computeBoardSizing(int width, int height) {
+		board.setSizing(board.getAspectRatio() < 1f * width / height ? Sizing.FILL_HEIGHT : Sizing.FILL_WIDTH);
+	}
+
+	@Override
 	protected void onTouch(int x, int y) {
-		if (board.touch(x, y)) {
+		if (board.touch(x, y) != null) {
 			board.toBoard(touch.x, touch.y, vector);
 			board.increaseDotAmount((int) vector.x, (int) vector.y);
 		}

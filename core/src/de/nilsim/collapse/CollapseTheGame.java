@@ -50,14 +50,14 @@ public class CollapseTheGame extends Game {
 		playerScreen = new PlayerScreen(this);
 		menuScreen = new MenuScreen(this, "Menü", new String[]{"Lokal", "Online", "Einstellungen"});
 		menuScreen.setClickListener(menu -> {
-			switch (menu) {
-				case 0:
+			switch (menu.getText()) {
+				case "Lokal":
 					setScreen(playerScreen);
 					break;
-				case 1:
+				case "Online":
 					System.out.println("Online");
 					break;
-				case 2:
+				case "Einstellungen":
 					System.out.println("Einstellungen");
 					break;
 

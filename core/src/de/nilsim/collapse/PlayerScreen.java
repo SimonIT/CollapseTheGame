@@ -45,7 +45,7 @@ public class PlayerScreen extends MenuScreen {
 
 	@Override
 	protected void onTouch(int x, int y) {
-		if (addButton.touch(touch.x, touch.y)) {
+		if (addButton.touch(touch.x, touch.y) != null) {
 			if (field.getText().isEmpty()) return;
 			Color playerColor = playerId < standardColors.length ? standardColors[playerId] : new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1);
 			players.add(new Player(playerId, playerColor, field.getText()));
@@ -53,7 +53,7 @@ public class PlayerScreen extends MenuScreen {
 			updatePlayerNames();
 			field.write("");
 		}
-		if (playButton.touch(touch.x, touch.y)) {
+		if (playButton.touch(touch.x, touch.y) != null) {
 			app.boardScreen = new BoardScreen(app, players);
 			app.setScreen(app.boardScreen);
 		}

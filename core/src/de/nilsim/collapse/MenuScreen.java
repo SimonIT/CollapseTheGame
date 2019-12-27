@@ -1,6 +1,7 @@
 package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.ui.Alignment;
+import ch.asynk.gdx.boardgame.ui.Label;
 import ch.asynk.gdx.boardgame.ui.Menu;
 
 public class MenuScreen extends AbstractScreen {
@@ -32,8 +33,8 @@ public class MenuScreen extends AbstractScreen {
 
 	@Override
 	protected void onTouch(int x, int y) {
-		if (menu.touch(touch.x, touch.y) && clickListener != null) {
-			clickListener.click(menu.touched());
+		if (menu.touch(touch.x, touch.y) != null && clickListener != null) {
+			clickListener.click((Label) menu.touch(touch.x, touch.y));
 		}
 	}
 
@@ -48,6 +49,6 @@ public class MenuScreen extends AbstractScreen {
 	}
 
 	public interface MenuClickListener {
-		void click(int menu);
+		void click(Label menu);
 	}
 }
