@@ -113,8 +113,8 @@ public class CollapseBoard extends Element implements Board {
 	@Override
 	public void computeDimensions() {
 		super.computeDimensions();
-		float widthBoard = getWidth() == 0 ? parent.getWidth() : getWidth();
-		float heightBoard = getHeight() == 0 ? parent.getHeight() : getHeight();
+		float widthBoard = getWidth();
+		float heightBoard = getHeight();
 
 		if (this.sizing.fillWidth()) {
 			fieldSize = (widthBoard - (2f * borderBoard) - ((width + 1f) * borderFields)) / width;

@@ -16,6 +16,7 @@ import java.util.List;
 
 public class BoardScreen extends AbstractScreen {
 	private CollapseBoard board;
+	private FlexibleBox scoreBox;
 	private ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
 	private Vector2 vector = new Vector2();
 	private BitmapFont normalFont;
@@ -27,8 +28,8 @@ public class BoardScreen extends AbstractScreen {
 		normalFont = app.assets.getFont(AssetNames.font);
 		deadFont = app.assets.get(AssetNames.redFont);
 		shadowFont = app.assets.get(AssetNames.shadowFont);
-		FlexibleBox scoreBox = new VerticalBox(players.size());
-		scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
+		board = new CollapseBoard(5, 7, players);
+		computeBoardSizing(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		scoreBox.setSpacing(20);
 		for (Player player : players) {
 			Label label = new Label(normalFont);
@@ -39,8 +40,6 @@ public class BoardScreen extends AbstractScreen {
 			playerLabel.put(player, label);
 		}
 		root.add(scoreBox);
-		board = new CollapseBoard(5, 7, players);
-		computeBoardSizing(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		playerLabel.get(board.getCurrentPlayer()).setFont(shadowFont);
 		board.setAlignment(Alignment.MIDDLE_CENTER);
 		board.setPointChangeListener(player -> {
@@ -66,7 +65,25 @@ public class BoardScreen extends AbstractScreen {
 	}
 
 	private void computeBoardSizing(int width, int height) {
-		board.setSizing(board.getAspectRatio() < 1f * width / height ? Sizing.FILL_HEIGHT : Sizing.FILL_WIDTH);
+		if (board.getAspectRatio() < 1f * width / height) {
+			if (scoreBox == null) scoreBox = new VerticalBox();
+			if (!(scoreBox instanceof VerticalBox)) {
+				root.remove(scoreBox);
+				scoreBox = new VerticalBox(scoreBox.getChildren());
+				root.add(scoreBox);
+			}
+			scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
+			board.setSizing(Sizing.FILL_HEIGHT);
+		} else {
+			if (scoreBox == null) scoreBox = new HorizontalBox();
+			if (!(scoreBox instanceof HorizontalBox)) {
+				root.remove(scoreBox);
+				scoreBox = new HorizontalBox(scoreBox.getChildren());
+				root.add(scoreBox);
+			}
+			scoreBox.setAlignment(Alignment.TOP_CENTER);
+			board.setSizing(Sizing.FILL_WIDTH);
+		}
 	}
 
 	@Override
