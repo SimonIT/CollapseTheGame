@@ -16,12 +16,22 @@ public class TextField extends Button implements InputProcessor {
 	private int position;
 	private boolean multiline = false;
 	private boolean show = true;
+	private boolean textChanged = false;
 	private final Timer.Task blinkTask = new Timer.Task() {
 		public void run() {
+			boolean taintedParent = taintParent;
+			taintParent = false;
 			if (show) {
 				TextField.super.write(text.substring(0, position) + "|" + text.substring(position));
 			} else {
 				TextField.super.write(text.substring(0, position) + " " + text.substring(position));
+			}
+			taintParent = taintedParent;
+			if (textChanged) {
+				taint();
+				textChanged = false;
+			} else {
+				tainted = false;
 			}
 			show = !show;
 		}
@@ -33,7 +43,6 @@ public class TextField extends Button implements InputProcessor {
 
 	public TextField(NinePatch patch, BitmapFont font, float padding) {
 		super(font, patch, padding);
-		taintParent = true;
 	}
 
 	public void setPlaceholder(String placeholder) {
@@ -69,7 +78,7 @@ public class TextField extends Button implements InputProcessor {
 	public void write(String text) {
 		this.text = text;
 		position = text.length();
-		taint();
+		textChanged = true;
 	}
 
 	@Override
@@ -90,20 +99,23 @@ public class TextField extends Button implements InputProcessor {
 		if (focused) {
 			switch (keycode) {
 				case Input.Keys.RIGHT:
-					if (position < text.length()) position++;
+					if (position < text.length()) position += Character.charCount(text.codePointAt(position));
 					break;
 				case Input.Keys.LEFT:
-					if (position > 0) position--;
+					if (position > 0) position -= Character.charCount(text.codePointBefore(position));
 					break;
 				case Input.Keys.DEL:
 					if (text.length() > 0) {
-						text = text.substring(0, position - 1) + text.substring(position);
-						position--;
+						int charCount = Character.charCount(text.codePointBefore(position));
+						text = text.substring(0, position - charCount) + text.substring(position);
+						position -= charCount;
+						textChanged = true;
 					}
 					break;
 				case Input.Keys.FORWARD_DEL:
 					if (position < text.length()) {
-						text = text.substring(0, position) + text.substring(position + 1);
+						text = text.substring(0, position) + text.substring(position + Character.charCount(text.codePointAt(position)));
+						textChanged = true;
 					}
 					break;
 				case Input.Keys.SPACE:
@@ -121,6 +133,7 @@ public class TextField extends Button implements InputProcessor {
 	public void type(String input) {
 		text = text.substring(0, position) + input + text.substring(position);
 		position += input.length();
+		textChanged = true;
 	}
 
 	@Override
