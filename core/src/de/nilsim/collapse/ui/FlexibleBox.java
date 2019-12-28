@@ -3,6 +3,7 @@ package de.nilsim.collapse.ui;
 import ch.asynk.gdx.boardgame.ui.Element;
 import ch.asynk.gdx.boardgame.utils.Collection;
 import ch.asynk.gdx.boardgame.utils.IterableSet;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public abstract class FlexibleBox extends Element {
 	protected int spacing = 0;
@@ -42,5 +43,11 @@ public abstract class FlexibleBox extends Element {
 	public void setSpacing(int spacing) {
 		this.spacing = spacing;
 		tainted = true;
+	}
+
+	@Override
+	public void draw(Batch batch) {
+		if (tainted) computeGeometry();
+		drawChildren(batch);
 	}
 }
