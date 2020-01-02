@@ -66,23 +66,23 @@ public class BoardScreen extends AbstractScreen {
 
 	private void computeBoardSizing(int width, int height) {
 		if (board.getAspectRatio() < 1f * width / height) {
-			if (scoreBox == null) scoreBox = new VerticalBox();
 			if (!(scoreBox instanceof VerticalBox)) {
 				root.remove(scoreBox);
-				scoreBox = new VerticalBox(scoreBox.getChildren());
+				if (scoreBox == null) scoreBox = new VerticalBox();
+				else scoreBox = new VerticalBox(scoreBox.getChildren());
 				root.add(scoreBox);
+				scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
+				board.setSizing(Sizing.FILL_HEIGHT);
 			}
-			scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
-			board.setSizing(Sizing.FILL_HEIGHT);
 		} else {
-			if (scoreBox == null) scoreBox = new HorizontalBox();
 			if (!(scoreBox instanceof HorizontalBox)) {
 				root.remove(scoreBox);
-				scoreBox = new HorizontalBox(scoreBox.getChildren());
+				if (scoreBox == null) scoreBox = new HorizontalBox();
+				else scoreBox = new HorizontalBox(scoreBox.getChildren());
 				root.add(scoreBox);
+				scoreBox.setAlignment(Alignment.TOP_CENTER);
+				board.setSizing(Sizing.FILL_WIDTH);
 			}
-			scoreBox.setAlignment(Alignment.TOP_CENTER);
-			board.setSizing(Sizing.FILL_WIDTH);
 		}
 	}
 

@@ -16,15 +16,15 @@ public class ColorElement extends Element {
 		updateTexture();
 	}
 
+	public Color getColor() {
+		return color;
+	}
+
 	public void setColor(Color color) {
 		if (!this.color.equals(color)) {
 			this.color = color;
 			updateTexture();
 		}
-	}
-
-	public Color getColor() {
-		return color;
 	}
 
 	private void updateTexture() {
@@ -46,6 +46,6 @@ public class ColorElement extends Element {
 		if (!visible) return;
 		if (tainted) computeGeometry();
 
-		batch.draw(colorTexture, getInnerX(), getInnerY());
+		batch.draw(colorTexture, getInnerX(), getInnerY(), getInnerWidth(), getInnerHeight());
 	}
 }

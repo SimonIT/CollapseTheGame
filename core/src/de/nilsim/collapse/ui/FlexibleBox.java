@@ -32,7 +32,7 @@ public abstract class FlexibleBox extends Element {
 
 	@Override
 	public void add(Element e) {
-		e.taintParent = true;
+		// e.taintParent = true; // Seem to be the problem for the memory usage
 		super.add(e);
 	}
 
@@ -42,7 +42,7 @@ public abstract class FlexibleBox extends Element {
 
 	public void setSpacing(int spacing) {
 		this.spacing = spacing;
-		tainted = true;
+		taint();
 	}
 
 	@Override

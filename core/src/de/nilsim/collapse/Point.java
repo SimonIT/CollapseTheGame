@@ -1,6 +1,6 @@
 package de.nilsim.collapse;
 
-import java.util.Objects;
+import java.util.Arrays;
 
 public class Point<T> {
 	public T x;
@@ -21,6 +21,6 @@ public class Point<T> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(x, y);
+		return Arrays.hashCode(new Object[]{x, y});
 	}
 }

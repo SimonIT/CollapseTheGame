@@ -53,7 +53,7 @@ public class PlayerScreen extends MenuScreen {
 			updatePlayerNames();
 			field.write("");
 		}
-		if (playButton.touch(touch.x, touch.y) != null) {
+		if (playButton.touch(touch.x, touch.y) != null && players.size() > 0) {
 			app.boardScreen = new BoardScreen(app, players);
 			app.setScreen(app.boardScreen);
 		}
