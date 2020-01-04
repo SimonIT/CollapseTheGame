@@ -3,6 +3,7 @@ package de.nilsim.collapse;
 import ch.asynk.gdx.boardgame.Assets;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +20,7 @@ public class CollapseTheGame extends Game {
 	Assets assets = new Assets();
 
 	public CollapseTheGame() {
+		assets.setLoader(Texture.class, "https://raw.githubusercontent.com/libgdx/libgdx/master/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/android/assets/badlogic.jpg", new TextureLoader(new WebFileHandleResolver()));
 		FileHandleResolver resolver = new InternalFileHandleResolver();
 		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		assets.setLoader(BitmapFont.class, ".TTF", new FreetypeFontLoader(resolver));
@@ -46,6 +48,7 @@ public class CollapseTheGame extends Game {
 		assets.load(AssetNames.redFont, BitmapFont.class, red);
 		assets.load(AssetNames.background, Texture.class);
 		assets.load(AssetNames.button, Texture.class);
+		assets.load("https://raw.githubusercontent.com/libgdx/libgdx/master/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/android/assets/badlogic.jpg", Texture.class);
 		assets.finishLoading();
 		playerScreen = new PlayerScreen(this);
 		menuScreen = new MenuScreen(this, "Menü", new String[]{"Lokal", "Online", "Einstellungen"});

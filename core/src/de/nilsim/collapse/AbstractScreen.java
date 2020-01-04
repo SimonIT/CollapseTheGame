@@ -58,6 +58,7 @@ public abstract class AbstractScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.draw(app.assets.getTexture("https://raw.githubusercontent.com/libgdx/libgdx/master/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/android/assets/badlogic.jpg"), 0, 0);
 		draw(batch);
 		root.draw(batch);
 		batch.end();
