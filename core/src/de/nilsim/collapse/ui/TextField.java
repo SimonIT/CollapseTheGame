@@ -38,7 +38,7 @@ public class TextField extends Button implements InputProcessor {
 	};
 
 	public TextField(NinePatch patch, BitmapFont font) {
-		this(patch, font, 0);
+		super(font, patch);
 	}
 
 	public TextField(NinePatch patch, BitmapFont font, float padding) {

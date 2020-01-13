@@ -6,7 +6,7 @@ import ch.asynk.gdx.boardgame.ui.Menu;
 
 public class MenuScreen extends AbstractScreen {
 
-	Menu menu;
+	protected Menu menu;
 	private MenuClickListener clickListener;
 
 	MenuScreen(CollapseTheGame collapseTheGame, String title, String[] menuPoints) {
