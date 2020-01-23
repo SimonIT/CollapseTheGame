@@ -67,12 +67,8 @@ public class CollapseBoard extends Element implements Board {
 		this.currentPlayerChangeListener.playerChanged(oldCurrentPlayer, getCurrentPlayer());
 	}
 
-	boolean onGrid(int x, int y) {
-		return x > -1 && x < width && y > -1 && y < height;
-	}
-
-	boolean onGrid(Point<Integer> position) {
-		return onGrid(position.x, position.y);
+	boolean isOnMap(Point<Integer> position) {
+		return isOnMap(position.x, position.y);
 	}
 
 	CollapsePiece getPiece(Point<Integer> position) {
@@ -88,7 +84,7 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	boolean increaseDotAmount(Point<Integer> position) {
-		if (!onGrid(position)) {
+		if (!isOnMap(position)) {
 			return false;
 		}
 		Player currentPlayer = getCurrentPlayer();
@@ -134,6 +130,21 @@ public class CollapseBoard extends Element implements Board {
 	@Override
 	public int[] getAngles() {
 		return new int[0];
+	}
+
+	@Override
+	public int size() {
+		return width * height;
+	}
+
+	@Override
+	public int getIdx(int x, int y) {
+		return y * width + x;
+	}
+
+	@Override
+	public boolean isOnMap(int x, int y) {
+		return x > -1 && x < width && y > -1 && y < height;
 	}
 
 	@Override
@@ -237,7 +248,7 @@ public class CollapseBoard extends Element implements Board {
 				for (ActionProgressPiece actionProgressPiece : actionProgress.getPieces()) {
 					Point<Integer> positionNew = actionProgressPiece.getEnd();
 					CollapsePiece piece = actionProgressPiece.getPiece();
-					if (wrapWorld || onGrid(positionNew)) {
+					if (wrapWorld || isOnMap(positionNew)) {
 						if (wrapWorld) {
 							positionNew = new Point<>(
 									(positionNew.x + width) % width,
