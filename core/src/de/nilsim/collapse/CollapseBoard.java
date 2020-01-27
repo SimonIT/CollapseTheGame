@@ -1,6 +1,8 @@
 package de.nilsim.collapse;
 
+import ch.asynk.gdx.boardgame.Tile;
 import ch.asynk.gdx.boardgame.boards.Board;
+import ch.asynk.gdx.boardgame.tilestorages.TileStorage;
 import ch.asynk.gdx.boardgame.ui.Element;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -95,7 +97,11 @@ public class CollapseBoard extends Element implements Board {
 				return false;
 			}
 			playersPieceCount[currentPlayerIndex]++;
-			setPiece(position, new CollapsePiece(currentPlayer));
+			CollapsePiece piece = new CollapsePiece(currentPlayer);
+			float fieldX = getX() + borderBoard + (position.x * (borderFields + fieldSize));
+			float fieldY = getY() + borderBoard + (position.y * (borderFields + fieldSize));
+			piece.setPosition(fieldX + pieceSpace, fieldY + pieceSpace);
+			setPiece(position, piece);
 		} else if (currentPiece.getOwner() != currentPlayer) {
 			return false;
 		} else {
@@ -138,7 +144,7 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	@Override
-	public int getIdx(int x, int y) {
+	public int genKey(int x, int y) {
 		return y * width + x;
 	}
 
@@ -156,6 +162,16 @@ public class CollapseBoard extends Element implements Board {
 	public void toBoard(float x, float y, Vector2 vector) {
 		vector.x = (x - getX() - borderBoard) / (fieldSize + borderFields);
 		vector.y = (y - getY() - borderBoard) / (fieldSize + borderFields);
+	}
+
+	@Override
+	public Tile[] getAdjacents() {
+		return new Tile[0];
+	}
+
+	@Override
+	public void buildAdjacents(int i, int i1, TileStorage.TileProvider tileProvider) {
+
 	}
 
 	@Override
@@ -215,7 +231,7 @@ public class CollapseBoard extends Element implements Board {
 						playersPieceCount[piece.getOwner().getId()]--;
 						setPiece(position, null);
 					} else {
-						batch.draw(piece, fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
+						piece.draw(batch);
 					}
 				}
 			}
@@ -226,7 +242,8 @@ public class CollapseBoard extends Element implements Board {
 				Point<Float> position = actionProgressPiece.getCurrent();
 				float fieldX = getX() + borderBoard + (position.x * (borderFields + fieldSize));
 				float fieldY = getY() + borderBoard + (position.y * (borderFields + fieldSize));
-				batch.draw(actionProgressPiece.getPiece(), fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
+				actionProgressPiece.getPiece().setPosition(fieldX + pieceSpace, fieldY + pieceSpace);
+				actionProgressPiece.getPiece().draw(batch);
 
 				if (wrapWorld) {
 					if (!actionProgressPiece.getEnd().equals(new Point<>(
@@ -239,7 +256,8 @@ public class CollapseBoard extends Element implements Board {
 						);
 						fieldX = getX() + borderBoard + (position.x * (borderFields + fieldSize));
 						fieldY = getY() + borderBoard + (position.y * (borderFields + fieldSize));
-						batch.draw(actionProgressPiece.getPiece(), fieldX + pieceSpace, fieldY + pieceSpace, pieceSize, pieceSize);
+						actionProgressPiece.getPiece().setPosition(fieldX + pieceSpace, fieldY + pieceSpace);
+						actionProgressPiece.getPiece().draw(batch);
 					}
 				}
 			}

@@ -30,7 +30,7 @@ public class CollapsePiece extends Piece {
 		if (points < 1) throw new IllegalArgumentException("A piece must have at least 1 dot");
 		if (this.points != points) {
 			this.points = points;
-			setTexture(owner.getPieceTexture(points));
+			sprite.setTexture(owner.getPieceTexture(points));
 		}
 	}
 
@@ -45,7 +45,7 @@ public class CollapsePiece extends Piece {
 	public void setOwner(Player owner) {
 		if (this.owner != owner) {
 			this.owner = owner;
-			setTexture(owner.getPieceTexture(points));
+			sprite.setTexture(owner.getPieceTexture(points));
 		}
 	}
 }
