@@ -48,4 +48,19 @@ public class ColorElement extends Element {
 
 		batch.draw(colorTexture, getInnerX(), getInnerY(), getInnerWidth(), getInnerHeight());
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ColorElement that = (ColorElement) o;
+
+		return color.equals(that.color);
+	}
+
+	@Override
+	public int hashCode() {
+		return color.hashCode();
+	}
 }

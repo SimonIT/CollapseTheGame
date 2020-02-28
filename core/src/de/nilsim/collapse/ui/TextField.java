@@ -83,14 +83,15 @@ public class TextField extends Button implements InputProcessor {
 
 	@Override
 	public Element touch(float x, float y) {
-		if (super.touch(x, y) == this) {
+		Element touched = super.touch(x, y);
+		if (touched == this) {
 			if (!focused) {
 				focus();
 			}
 			return this;
 		} else {
 			unfocus();
-			return super.touch(x, y);
+			return touched;
 		}
 	}
 
