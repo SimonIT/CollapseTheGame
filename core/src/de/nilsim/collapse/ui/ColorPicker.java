@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class ColorPicker extends Element {
 
-	private int elementsPerRow;
+	private int elementsPerRow, colorPadding = 10;
 
 	public ColorPicker() {
 		super();
@@ -40,11 +40,30 @@ public class ColorPicker extends Element {
 	}
 
 	private void updateColors() {
-		elementsPerRow = MathUtils.ceilPositive((float) Math.sqrt(this.children.size()));
+		elementsPerRow = MathUtils.round((float) Math.sqrt(this.children.size()));
+	}
+
+	@Override
+	public void computePosition() {
+		super.computePosition();
+
+		int row = 0, elementNumber = 0;
+		for (Element element : children) {
+			System.out.println(element);
+			if (elementNumber >= elementsPerRow) {
+				row++;
+				elementNumber = 0;
+			}
+			element.setPosition(getInnerX() + elementNumber * (element.getWidth() + colorPadding), getInnerY() + row * (element.getHeight() + colorPadding));
+			elementNumber++;
+		}
 	}
 
 	@Override
 	public void draw(Batch batch) {
+		if (!visible) return;
+		if (tainted) computeGeometry();
 
+		drawChildren(batch);
 	}
 }
