@@ -11,8 +11,12 @@ public class ColorElement extends Element {
 	private Texture colorTexture;
 
 	public ColorElement(Color color) {
+		this(color, 25);
+	}
+
+	public ColorElement(Color color, int size) {
 		this.color = color;
-		rect.setSize(25);
+		rect.setSize(size);
 		updateTexture();
 	}
 
