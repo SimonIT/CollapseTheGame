@@ -15,6 +15,8 @@ public class ColorPicker extends Element {
 	private final Texture background;
 	private final int colorSize = 25;
 	private int elementsPerRow;
+	private ColorSelectedListener colorSelectedListener;
+	private ColorElement selectedElement;
 
 	public ColorPicker() {
 		super();
@@ -77,5 +79,32 @@ public class ColorPicker extends Element {
 
 		batch.draw(background, getX(), getY(), getWidth(), getHeight());
 		drawChildren(batch);
+	}
+
+	@Override
+	public Element touch(float x, float y) {
+		if (!blocked && visible && rect.contains(x, y)) {
+			for (Element e : children) {
+				final Element t = e.touch(x, y);
+				if (t != null) {
+					ColorElement colorElement = (ColorElement) t;
+					if (colorSelectedListener != null) {
+						selectedElement = colorElement;
+						colorSelectedListener.onColorSelected(colorElement.getColor());
+					}
+					return t;
+				}
+			}
+			return this;
+		}
+		return null;
+	}
+
+	public void setColorSelectedListener(ColorSelectedListener colorSelectedListener) {
+		this.colorSelectedListener = colorSelectedListener;
+	}
+
+	public interface ColorSelectedListener {
+		void onColorSelected(Color color);
 	}
 }
