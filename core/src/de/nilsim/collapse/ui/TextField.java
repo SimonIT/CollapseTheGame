@@ -19,19 +19,19 @@ public class TextField extends Button implements InputProcessor {
 	private boolean textChanged = false;
 	private final Timer.Task blinkTask = new Timer.Task() {
 		public void run() {
-			boolean taintedParent = taintParent;
-			taintParent = false;
+			boolean taintedParent = dirty;
+			dirty = false;
 			if (show) {
 				TextField.super.write(text.substring(0, position) + "|" + text.substring(position));
 			} else {
 				TextField.super.write(text.substring(0, position) + " " + text.substring(position));
 			}
-			taintParent = taintedParent;
+			dirty = taintedParent;
 			if (textChanged) {
 				taint();
 				textChanged = false;
 			} else {
-				tainted = false;
+				dirty = false;
 			}
 			show = !show;
 		}

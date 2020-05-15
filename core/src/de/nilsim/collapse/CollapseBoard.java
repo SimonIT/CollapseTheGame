@@ -199,10 +199,7 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	@Override
-	public void draw(Batch batch) {
-		if (!visible) return;
-		if (tainted) computeGeometry();
-
+	public void drawReal(Batch batch) {
 		batch.draw(board, getX(), getY(), getWidth(), getHeight());
 
 		for (int y = 0; y < height; y++) {

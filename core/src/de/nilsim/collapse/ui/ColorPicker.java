@@ -1,5 +1,6 @@
 package de.nilsim.collapse.ui;
 
+import ch.asynk.gdx.boardgame.ui.Container;
 import ch.asynk.gdx.boardgame.ui.Element;
 import ch.asynk.gdx.boardgame.utils.IterableSet;
 import com.badlogic.gdx.graphics.Color;
@@ -9,7 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ColorPicker extends Element {
+public class ColorPicker extends Container {
 
 	private final int colorPadding = 10;
 	private final Texture background;
@@ -73,12 +74,9 @@ public class ColorPicker extends Element {
 	}
 
 	@Override
-	public void draw(Batch batch) {
-		if (!visible) return;
-		if (tainted) computeGeometry();
-
+	public void drawReal(Batch batch) {
 		batch.draw(background, getX(), getY(), getWidth(), getHeight());
-		drawChildren(batch);
+		super.drawReal(batch);
 	}
 
 	@Override

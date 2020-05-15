@@ -46,10 +46,7 @@ public class ColorElement extends Element {
 	}
 
 	@Override
-	public void draw(Batch batch) {
-		if (!visible) return;
-		if (tainted) computeGeometry();
-
+	public void drawReal(Batch batch) {
 		batch.draw(colorTexture, getInnerX(), getInnerY(), getInnerWidth(), getInnerHeight());
 	}
 
