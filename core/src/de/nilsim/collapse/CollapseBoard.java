@@ -4,6 +4,7 @@ import ch.asynk.gdx.boardgame.Tile;
 import ch.asynk.gdx.boardgame.boards.Board;
 import ch.asynk.gdx.boardgame.tilestorages.TileStorage;
 import ch.asynk.gdx.boardgame.ui.Element;
+import ch.asynk.gdx.boardgame.ui.Sizing;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -118,10 +119,10 @@ public class CollapseBoard extends Element implements Board {
 		float widthBoard = getWidth();
 		float heightBoard = getHeight();
 
-		if (this.sizing.fillWidth()) {
+		if (Sizing.contains(this.sizing, Sizing.FILL_X)) {
 			fieldSize = (widthBoard - (2f * borderBoard) - ((width + 1f) * borderFields)) / width;
 			heightBoard = 2 * borderBoard + height * (borderFields + fieldSize);
-		} else {
+		} else if (Sizing.contains(this.sizing, Sizing.FILL_Y)) {
 			fieldSize = (heightBoard - (2f * borderBoard) - ((height - 1f) * borderFields)) / height;
 			widthBoard = 2 * borderBoard + width * (borderFields + fieldSize);
 		}

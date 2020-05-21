@@ -1,6 +1,7 @@
 package de.nilsim.collapse;
 
 import ch.asynk.gdx.boardgame.ui.Alignment;
+import ch.asynk.gdx.boardgame.ui.Container;
 import ch.asynk.gdx.boardgame.ui.Label;
 import ch.asynk.gdx.boardgame.ui.Sizing;
 import com.badlogic.gdx.Gdx;
@@ -8,15 +9,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 import de.nilsim.collapse.ui.ColorElement;
-import de.nilsim.collapse.ui.FlexibleBox;
-import de.nilsim.collapse.ui.HorizontalBox;
-import de.nilsim.collapse.ui.VerticalBox;
 
 import java.util.List;
 
 public class BoardScreen extends AbstractScreen {
 	private CollapseBoard board;
-	private FlexibleBox scoreBox;
+	private Container scoreBox = new Container();
 	private ObjectMap<Player, Label> playerLabel = new ObjectMap<>();
 	private Vector2 vector = new Vector2();
 	private BitmapFont normalFont;
@@ -34,7 +32,10 @@ public class BoardScreen extends AbstractScreen {
 		for (Player player : players) {
 			Label label = new Label(normalFont);
 			label.write(player.getName() + ": " + player.getPoints());
-			FlexibleBox colorPlayer = new HorizontalBox(new ColorElement(player.getColor()), label);
+			Container colorPlayer = new Container();
+			colorPlayer.setDirection(Container.Direction.HORIZONTAL);
+			colorPlayer.add(new ColorElement(player.getColor()));
+			colorPlayer.add(label);
 			colorPlayer.setSpacing(10);
 			scoreBox.add(colorPlayer);
 			playerLabel.put(player, label);
@@ -66,23 +67,17 @@ public class BoardScreen extends AbstractScreen {
 
 	private void computeBoardSizing(int width, int height) {
 		if (board.getAspectRatio() < 1f * width / height) {
-			if (!(scoreBox instanceof VerticalBox)) {
-				root.remove(scoreBox);
-				if (scoreBox == null) scoreBox = new VerticalBox();
-				else scoreBox = new VerticalBox(scoreBox.getChildren());
-				root.add(scoreBox);
+			//if (scoreBox.getDirection() != Container.Direction.VERTICAL) {
+				scoreBox.setDirection(Container.Direction.VERTICAL);
 				scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
-				board.setSizing(Sizing.FILL_HEIGHT);
-			}
+				board.setSizing(Sizing.FILL_Y);
+			//}
 		} else {
-			if (!(scoreBox instanceof HorizontalBox)) {
-				root.remove(scoreBox);
-				if (scoreBox == null) scoreBox = new HorizontalBox();
-				else scoreBox = new HorizontalBox(scoreBox.getChildren());
-				root.add(scoreBox);
+			//if (scoreBox.getDirection() != Container.Direction.VERTICAL) {
+				scoreBox.setDirection(Container.Direction.HORIZONTAL);
 				scoreBox.setAlignment(Alignment.TOP_CENTER);
-				board.setSizing(Sizing.FILL_WIDTH);
-			}
+				board.setSizing(Sizing.FILL_X);
+			//}
 		}
 	}
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 
 public class ColorPicker extends Container {
 
@@ -59,9 +60,7 @@ public class ColorPicker extends Container {
 	}
 
 	@Override
-	public void computePosition() {
-		super.computePosition();
-
+	public void computeGeometry(Rectangle area, boolean resized) {
 		int row = 0, elementNumber = 0;
 		for (Element element : children) {
 			if (elementNumber >= elementsPerRow) {
