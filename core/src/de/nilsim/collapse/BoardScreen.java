@@ -67,17 +67,17 @@ public class BoardScreen extends AbstractScreen {
 
 	private void computeBoardSizing(int width, int height) {
 		if (board.getAspectRatio() < 1f * width / height) {
-			//if (scoreBox.getDirection() != Container.Direction.VERTICAL) {
+			if (scoreBox.getDirection() != Container.Direction.VERTICAL) {
 				scoreBox.setDirection(Container.Direction.VERTICAL);
 				scoreBox.setAlignment(Alignment.MIDDLE_LEFT);
 				board.setSizing(Sizing.FILL_Y);
-			//}
+			}
 		} else {
-			//if (scoreBox.getDirection() != Container.Direction.VERTICAL) {
+			if (scoreBox.getDirection() != Container.Direction.HORIZONTAL) {
 				scoreBox.setDirection(Container.Direction.HORIZONTAL);
 				scoreBox.setAlignment(Alignment.TOP_CENTER);
 				board.setSizing(Sizing.FILL_X);
-			//}
+			}
 		}
 	}
 
