@@ -1,10 +1,11 @@
 package de.nilsim.collapse;
 
+import ch.asynk.gdx.boardgame.Piece;
 import ch.asynk.gdx.boardgame.Tile;
 import ch.asynk.gdx.boardgame.boards.Board;
-import ch.asynk.gdx.boardgame.tilestorages.TileStorage;
 import ch.asynk.gdx.boardgame.ui.Element;
 import ch.asynk.gdx.boardgame.ui.Sizing;
+import ch.asynk.gdx.boardgame.utils.Collection;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -140,6 +141,16 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	@Override
+	public Tile getTile(int x, int y) {
+		return null;
+	}
+
+	@Override
+	public boolean isOnBoard(int x, int y) {
+		return false;
+	}
+
+	@Override
 	public int size() {
 		return width * height;
 	}
@@ -149,7 +160,6 @@ public class CollapseBoard extends Element implements Board {
 		return y * width + x;
 	}
 
-	@Override
 	public boolean isOnMap(int x, int y) {
 		return x > -1 && x < width && y > -1 && y < height;
 	}
@@ -171,8 +181,23 @@ public class CollapseBoard extends Element implements Board {
 	}
 
 	@Override
-	public void buildAdjacents(int i, int i1, TileStorage.TileProvider tileProvider) {
+	public void buildAdjacents(int x, int y) {
 
+	}
+
+	@Override
+	public int possibleMoves(Piece piece, Tile from, Collection<Tile> tiles) {
+		return 0;
+	}
+
+	@Override
+	public int shortestPath(Piece piece, Tile from, Tile to, Collection<Tile> tiles) {
+		return 0;
+	}
+
+	@Override
+	public boolean lineOfSight(int x0, int y0, int x1, int y1, Collection<Tile> tiles, Vector2 v) {
+		return false;
 	}
 
 	@Override
