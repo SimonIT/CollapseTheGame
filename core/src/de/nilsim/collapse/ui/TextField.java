@@ -174,7 +174,7 @@ public class TextField extends Button implements InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float x, float y) {
 		return false;
 	}
 }

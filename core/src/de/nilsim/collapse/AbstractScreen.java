@@ -105,8 +105,8 @@ public abstract class AbstractScreen implements Screen {
 		final InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(new InputAdapter() {
 			@Override
-			public boolean scrolled(int amount) {
-				onZoom(amount * ZOOM_SCROLL_FACTOR);
+			public boolean scrolled(float x, float y) {
+				onZoom(y * ZOOM_SCROLL_FACTOR);
 				return true;
 			}
 
