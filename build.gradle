@@ -10,7 +10,7 @@ buildscript {
 	dependencies {
 		classpath 'org.wisepersist:gwt-gradle-plugin:1.1.10'
 		classpath 'com.android.tools.build:gradle:4.0.2'
-		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.10'
+		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.11'
 	}
 }
 
@@ -19,7 +19,7 @@ allprojects {
 	version = '1.0'
 	ext {
 		appName = "CollapseTheGame"
-		gdxVersion = '1.9.12-SNAPSHOT'
+		gdxVersion = '1.9.13-SNAPSHOT'
 		roboVMVersion = '2.3.10'
 		box2DLightsVersion = '1.4'
 		ashleyVersion = '1.7.0'
