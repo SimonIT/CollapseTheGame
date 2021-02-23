@@ -46,7 +46,7 @@ project(":desktop") {
 		api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 		api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 		api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-		api 'com.github.SimonIT.App42MultiPlayerGamingSDK:java:master-SNAPSHOT:all'
+		api 'com.github.SimonIT.gdx-AppWarp:java:master-SNAPSHOT:all'
 	}
 }
 
@@ -70,7 +70,7 @@ project(":android") {
 		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
 		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
 		natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
-		api('com.github.SimonIT.App42MultiPlayerGamingSDK:java:master-SNAPSHOT:all') {
+		api('com.github.SimonIT.gdx-AppWarp:java:master-SNAPSHOT:all') {
 			exclude group: 'org.json', module: 'json'
 		}
 	}
@@ -88,7 +88,7 @@ project(":ios") {
 		api "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
 		api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
 		api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
-		api 'com.github.SimonIT.App42MultiPlayerGamingSDK:java:master-SNAPSHOT:all'
+		api 'com.github.SimonIT.gdx-AppWarp:java:master-SNAPSHOT:all'
 	}
 }
 
@@ -107,9 +107,9 @@ project(":html") {
 		api "com.github.intrigus.gdx-freetype-gwt:gdx-freetype-gwt:1.9.10"
 		api "com.github.intrigus.gdx-freetype-gwt:gdx-freetype-gwt:1.9.10:sources"
 		api 'com.github.jeremyz:gdx-boardgame:master-SNAPSHOT:sources'
-		api 'com.github.SimonIT.App42MultiPlayerGamingSDK:core:master-SNAPSHOT:sources'
-		api 'com.github.SimonIT.App42MultiPlayerGamingSDK:gwt:master-SNAPSHOT'
-		api 'com.github.SimonIT.App42MultiPlayerGamingSDK:gwt:master-SNAPSHOT:sources'
+		api 'com.github.SimonIT.gdx-AppWarp:core:master-SNAPSHOT:sources'
+		api 'com.github.SimonIT.gdx-AppWarp:gwt:master-SNAPSHOT'
+		api 'com.github.SimonIT.gdx-AppWarp:gwt:master-SNAPSHOT:sources'
 	}
 }
 
@@ -126,7 +126,7 @@ project(":core") {
 		api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 		api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 		api 'com.github.jeremyz:gdx-boardgame:master-SNAPSHOT'
-		api 'com.github.SimonIT.App42MultiPlayerGamingSDK:core:master-SNAPSHOT'
+		api 'com.github.SimonIT.gdx-AppWarp:core:master-SNAPSHOT'
 
 		testImplementation 'org.junit.jupiter:junit-jupiter:5.8.0-SNAPSHOT'
 		testImplementation 'org.mockito:mockito-core:3.7.7'
