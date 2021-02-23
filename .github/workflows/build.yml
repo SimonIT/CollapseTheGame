@@ -23,6 +23,10 @@ jobs:
           java-version: 11
       - name: Setup Android build environment
         uses: android-actions/setup-android@v2
+      - name: Create debug keystore for android
+        run: |
+          mkdir -p $HOME/.android
+          keytool -genkey -v -keystore $HOME/.android/debug.keystore -storetype PKCS12 -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -noprompt -dname "CN=CollapseTheGame, OU=SimonIT, O=SimonIT, L=Unknown, ST=Unknown, C=DE"
       - name: Build whole project with gradle
         run: ./gradlew build
       - name: Distribute Desktop
