@@ -1,4 +1,4 @@
 # CollapseTheGame
-[![Build Status](https://travis-ci.com/SimonIT/CollapseTheGame.svg?branch=master)](https://travis-ci.com/SimonIT/CollapseTheGame)
+[![Build](https://github.com/SimonIT/CollapseTheGame/actions/workflows/build.yml/badge.svg)](https://github.com/SimonIT/CollapseTheGame/actions/workflows/build.yml)
 
 Beautiful strategy game for multiple players
