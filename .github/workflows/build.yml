@@ -29,24 +29,3 @@ jobs:
           keytool -genkey -v -keystore $HOME/.android/debug.keystore -storetype PKCS12 -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -noprompt -dname "CN=CollapseTheGame, OU=SimonIT, O=SimonIT, L=Unknown, ST=Unknown, C=DE"
       - name: Build whole project with gradle
         run: ./gradlew build
-      - name: Distribute Desktop
-        run: ./gradlew desktop:dist
-      - name: Distribute Android
-        run: ./gradlew android:assembleRelease
-      - name: Distribute HTML
-        run: ./gradlew html:dist
-      - name: Upload dists
-        uses: actions/upload-artifact@v2.1.4
-        with:
-          name: desktop
-          path: desktop/build/libs/*
-      - name: Upload dists
-        uses: actions/upload-artifact@v2.1.4
-        with:
-          name: android
-          path: android/build/outputs/apk/android-release-unsigned.apk
-      - name: Upload dists
-        uses: actions/upload-artifact@v2.1.4
-        with:
-          name: html
-          path: html/build/dist/
