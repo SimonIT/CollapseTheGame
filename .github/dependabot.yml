@@ -1,0 +1,30 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.android.tools.build:gradle
+    versions:
+    - 4.1.2
+  - dependency-name: com.badlogicgames.gdx:gdx
+    versions:
+    - 1.9.14
+  - dependency-name: com.badlogicgames.gdx:gdx-backend-gwt
+    versions:
+    - 1.9.14
+  - dependency-name: com.badlogicgames.gdx:gdx-backend-robovm
+    versions:
+    - 1.9.14
+  - dependency-name: com.badlogicgames.gdx:gdx-freetype
+    versions:
+    - 1.9.14
+  - dependency-name: com.badlogicgames.gdx:gdx-backend-android
+    versions:
+    - 1.9.14
+  - dependency-name: com.badlogicgames.gdx:gdx-backend-lwjgl3
+    versions:
+    - 1.9.14
