@@ -102,7 +102,7 @@ project(":html") {
 		api "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
 		api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
 		api "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
-		api "com.github.intrigus.gdx-freetype-gwt:gdx-freetype-gwt:1.9.10"
+		api "com.github.intrigus.gdx-freetype-gwt:gdx-freetype-gwt:1.9.10.1"
 		api "com.github.intrigus.gdx-freetype-gwt:gdx-freetype-gwt:1.9.10:sources"
 		api 'com.github.jeremyz:gdx-boardgame:master-SNAPSHOT:sources'
 		api 'com.github.SimonIT.gdx-AppWarp:core:master-SNAPSHOT:sources'
