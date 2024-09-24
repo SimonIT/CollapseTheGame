@@ -9,7 +9,7 @@ buildscript {
 	}
 	dependencies {
 		classpath 'org.wisepersist:gwt-gradle-plugin:1.1.19'
-		classpath 'com.android.tools.build:gradle:7.4.2'
+		classpath 'com.android.tools.build:gradle:8.6.1'
 		classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.22'
 	}
 }
